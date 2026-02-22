@@ -3,57 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="tourTitle">Тур</title>
+    <title>Детали тура | ТурТур Пхукет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Добавьте стили для страницы тура */
+        :root { --primary: #ff9900; --dark: #2c3e50; }
+        body { font-family: 'Open Sans', sans-serif; margin: 0; padding-top: 80px; background: #f9f9f9; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--dark); }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; background: white; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+
+        header { background: white; padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid #eee; }
+        .nav-inner { display: flex; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 20px; align-items: center; }
+        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 20px; }
+        .back-btn { text-decoration: none; color: #555; font-weight: 600; cursor: pointer; }
+        .back-btn:hover { color: var(--primary); }
+
+        .hero-img { width: 100%; height: 400px; object-fit: cover; border-radius: 15px; margin-bottom: 30px; background: #eee; }
+        .tour-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 30px; gap: 20px; }
+        .tour-title { font-size: 32px; margin: 0; line-height: 1.2; }
+        .tour-price { font-size: 28px; color: var(--primary); font-weight: 800; white-space: nowrap; }
+
+        .content-block { margin-bottom: 30px; line-height: 1.8; color: #444; font-size: 16px; }
+        .content-block h3 { margin-top: 25px; margin-bottom: 15px; font-size: 20px; }
+
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .gallery-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: 0.3s; background: #eee; }
+        .gallery-img:hover { transform: scale(1.02); }
+
+        .btn-book {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-book:hover { background: #e68a00; transform: translateY(-2px); }
+
+        .loading { text-align: center; padding: 50px; font-size: 20px; color: #777; }
+        .error-msg { text-align: center; padding: 50px; color: red; }
+
+        @media (max-width: 768px) {
+            .hero-img { height: 250px; }
+            .tour-title { font-size: 24px; }
+            .tour-price { font-size: 22px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="tourContent">
-            <!-- Контент будет загружен из Strapi -->
-        </div>
+
+<header>
+    <div class="nav-inner">
+        <a href="index.html" class="logo">ТУРТУР ПХУКЕТ</a>
+        <span class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Назад</span>
     </div>
+</header>
 
-    <script>
-        const STRAPI_URL = 'http://localhost:1337';
-        const STRAPI_API_TOKEN = 'ваш-токен';
+<div class="container" id="tourContainer">
+    <div class="loading">Загрузка информации о туре...</div>
+</div>
 
-        async function loadTour() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const slug = urlParams.get('slug');
+<script>
+    const STRAPI_URL = 'http://5.8.76.244:1337';
 
-            if (!slug) {
-                window.location.href = '/';
-                return;
-            }
+    // Улучшенная функция получения картинки с защитой от ошибок
+    function getImageUrl(image) {
+        // Если изображения нет вообще
+        if (!image) return 'https://placehold.co/800x600?text=Нет+фото';
 
-            const response = await fetch(`${STRAPI_URL}/api/tours?filters[slug][$eq]=${slug}&populate=*`, {
-                headers: {
-                    'Authorization': `Bearer ${STRAPI_API_TOKEN}`
-                }
-            });
+        let url = null;
 
-            const data = await response.json();
-            const tour = data.data[0];
-
-            if (!tour) {
-                window.location.href = '/';
-                return;
-            }
-
-            // Заполнение страницы данными
-            document.getElementById('tourTitle').textContent = tour.attributes.title;
-            document.getElementById('tourContent').innerHTML = `
-                <h1>${tour.attributes.title}</h1>
-                <img src="${STRAPI_URL + tour.attributes.image.data.attributes.url}" alt="${tour.attributes.title}">
-                <p>${tour.attributes.description}</p>
-                <div class="price">$${tour.attributes.price}</div>
-            `;
+        // Пробуем разные варианты структуры объекта image (Strapi v4/v5)
+        if (typeof image === 'string') {
+            url = image;
+        } else if (image.url) {
+            url = image.url;
+        } else if (image.data && image.data.attributes && image.data.attributes.url) {
+            url = image.data.attributes.url;
+        } else if (image.formats) {
+            // Берем большое фото, если есть, иначе среднее
+            url = image.formats.large?.url || image.formats.medium?.url || image.formats.small?.url || image.url;
         }
 
-        loadTour();
-    </script>
+        // Если URL относительный, добавляем адрес сервера
+        if (url && url.startsWith('/')) {
+            return STRAPI_URL + url;
+        }
+
+        return url || 'https://placehold.co/800x600?text=Нет+фото';
+    }
+
+    async function loadTour() {
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get('slug');
+
+        if (!slug) {
+            document.getElementById('tourContainer').innerHTML = '<div class="error-msg">Не указан тур (нет параметра slug)</div>';
+            return;
+        }
+
+        try {
+            // Запрашиваем тур по Slug (учитываем регистр, обычно Slug с большой буквы в моделях)
+            // Пробуем оба варианта написания фильтра, если один не сработает
+            let response = await fetch(`${STRAPI_URL}/api/tours?filters[Slug][$eq]=${slug}&populate=*`);
+
+            // Если ничего не нашлось, пробуем строчный вариант (на случай разных версий Strapi)
+            if (!response.ok) {
+                 response = await fetch(`${STRAPI_URL}/api/tours?filters[slug][$eq]=${slug}&populate=*`);
+            }
+
+            const json = await response.json();
+
+            if (!json.data || json.data.length === 0) {
+                document.getElementById('tourContainer').innerHTML = `<div class="error-msg">Тур с адресом "${slug}" не найден.<br><a href="index.html" style="color:var(--primary); text-decoration:underline;">Вернуться на главную</a></div>`;
+                return;
+            }
+
+            const tour = json.data[0];
+            // Совместимость со структурой Strapi v5 (где атрибуты могут быть прямо в объекте или в attributes)
+            const attrs = tour.attributes ? tour.attributes : tour;
+
+            const mainImg = getImageUrl(attrs.MainImage);
+
+            // Обработка Rich Text описания
+            let descHtml = '';
+            if (Array.isArray(attrs.description)) {
+                descHtml = attrs.description.map(block => {
+                    if (block.type === 'paragraph') return `<p>${block.children.map(c => c.text).join('')}</p>`;
+                    if (block.type === 'heading') return `<h3>${block.children.map(c => c.text).join('')}</h3>`;
+                    return '';
+                }).join('');
+            } else if (attrs.description) {
+                descHtml = `<p>${attrs.description}</p>`;
+            } else {
+                descHtml = `<p>${attrs.short_description || 'Описание отсутствует.'}</p>`;
+            }
+
+            // Галерея
+            let galleryHtml = '';
+            if (attrs.gallery && Array.isArray(attrs.gallery) && attrs.gallery.length > 0) {
+                galleryHtml = '<h3>Галерея</h3><div class="gallery-grid">' +
+                    attrs.gallery.map(img => `<img src="${getImageUrl(img)}" class="gallery-img" onclick="window.open(this.src)">`).join('') +
+                    '</div>';
+            }
+
+            // Кнопка бронирования (WhatsApp)
+            const phone = '66951905999';
+            const tgUsername = 'tourtour_admin';
+            const tgMessage = `Здравствуйте! Хочу узнать подробности и забронировать тур: ${attrs.title}`;
+            // Ссылка формирует сообщение при клике (работает в новых версиях TG)
+            const tgLink = `https://t.me/${tgUsername}?text=${encodeURIComponent(tgMessage)}`;
+
+            // Обработка списков "Включено/Не включено" (если это JSON массив)
+            let includedHtml = '';
+            if (attrs.included) {
+                let items = [];
+                if (Array.isArray(attrs.included)) {
+                    items = attrs.included;
+                } else if (typeof attrs.included === 'string') {
+                     try { items = JSON.parse(attrs.included); } catch(e) { items = [attrs.included]; }
+                }
+                if (items.length > 0) {
+                    includedHtml = '<ul>' + items.map(i => `<li>✅ ${i}</li>`).join('') + '</ul>';
+                }
+            }
+
+            let notIncludedHtml = '';
+            if (attrs.notIncluded) {
+                let items = [];
+                if (Array.isArray(attrs.notIncluded)) {
+                    items = attrs.notIncluded;
+                } else if (typeof attrs.notIncluded === 'string') {
+                     try { items = JSON.parse(attrs.notIncluded); } catch(e) { items = [attrs.notIncluded]; }
+                }
+                if (items.length > 0) {
+                    notIncludedHtml = '<ul>' + items.map(i => `<li>❌ ${i}</li>`).join('') + '</ul>';
+                }
+            }
+
+            const html = `
+                <img src="${mainImg}" class="hero-img" alt="${attrs.title || 'Тур'}">
+
+                <div class="tour-header">
+                    <h1 class="tour-title">${attrs.title || 'Без названия'}</h1>
+                    <div class="tour-price">${attrs.currency_symbol || '$'}${attrs.price ? Number(attrs.price).toLocaleString() : '0'}</div>
+                </div>
+
+                <div class="content-block">
+                    ${descHtml}
+                </div>
+
+                ${galleryHtml}
+
+                <div style="text-align: center; margin: 40px 0;">
+                    <a href="${tgLink}" target="_blank" class="btn-book">
+                        <i class="fab fa-telegram-plane"></i> Забронировать в Telegram
+                    </a>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;" class="content-block">
+                    <div>
+                        <h3>✅ Включено в стоимость:</h3>
+                        ${includedHtml || '<p>Информация уточняется</p>'}
+                    </div>
+                    <div>
+                        <h3>❌ Не включено:</h3>
+                        ${notIncludedHtml || '<p>Все включено или информация уточняется</p>'}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('tourContainer').innerHTML = html;
+            document.title = `${attrs.title || 'Тур'} | ТурТур Пхукет`;
+
+        } catch (e) {
+            console.error('Ошибка загрузки тура:', e);
+            document.getElementById('tourContainer').innerHTML = `<div class="error-msg">Ошибка загрузки данных: ${e.message}<br>Проверьте консоль (F12) для деталей.</div>`;
+        }
+    }
+
+    // Запускаем загрузку при открытии страницы
+    loadTour();
+</script>
 </body>
 </html>

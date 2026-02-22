@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог | ТурТур Пхукет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root { --primary: #ff9900; --dark: #2c3e50; --light: #f8f9fa; }
+        body { font-family: 'Open Sans', sans-serif; margin: 0; background: var(--light); padding-top: 80px; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--dark); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        header { background: white; padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 20px; }
+        .back-btn { text-decoration: none; color: var(--dark); font-weight: 600; cursor: pointer; }
+        .back-btn:hover { color: var(--primary); }
+
+        /* Grid */
+        .tours-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; padding: 40px 0; }
+        .tour-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: transform 0.3s; cursor: pointer; display: flex; flex-direction: column; }
+        .tour-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+
+        .tour-image-wrapper { height: 220px; position: relative; background: #eee; }
+        .tour-image { width: 100%; height: 100%; object-fit: cover; }
+
+        .tour-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .tour-category { font-size: 12px; color: #999; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .tour-title { font-size: 18px; margin: 10px 0; font-weight: 700; line-height: 1.4; flex-grow: 1; }
+        .tour-price { color: var(--primary); font-weight: 800; font-size: 20px; margin-top: 15px; }
+
+        .badge-recommended { position: absolute; top: 10px; left: 10px; background: var(--primary); color: white; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; z-index: 2; }
+        .tour-rating { position: absolute; top: 10px; right: 10px; background: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 14px; z-index: 2; }
+        .tour-rating i { color: #ffc107; }
+
+        .loading { text-align: center; padding: 50px; font-size: 20px; color: #777; grid-column: 1/-1; }
+        .error-msg { text-align: center; padding: 50px; color: red; grid-column: 1/-1; }
+
+        @media (max-width: 768px) {
+            .tours-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav-inner">
+        <a href="index.html" class="logo">ТУРТУР ПХУКЕТ</a>
+        <span class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Назад</span>
+    </div>
+</header>
+
+<div class="container">
+    <h1 id="pageTitle" style="margin-top: 40px; text-align: center;">Загрузка...</h1>
+    <div id="catalogGrid" class="tours-grid">
+        <div class="loading">Загрузка каталога...</div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    const STRAPI_URL = 'http://5.8.76.244:1337';
+
+    // Универсальная функция получения картинки (защищена от ошибок)
+    function getImageUrl(image) {
+        if (!image) return 'https://placehold.co/400x300?text=Нет+фото';
+
+        let url = null;
+        if (typeof image === 'string') {
+            url = image;
+        } else if (image.url) {
+            url = image.url;
+        } else if (image.data && image.data.attributes && image.data.attributes.url) {
+            url = image.data.attributes.url;
+        } else if (image.formats) {
+            url = image.formats.large?.url || image.formats.medium?.url || image.url;
+        }
+
+        if (url && url.startsWith('/')) {
+            return STRAPI_URL + url;
+        }
+        return url || 'https://placehold.co/400x300?text=Нет+фото';
+    }
+
+    async function loadCatalog() {
+        const params = new URLSearchParams(window.location.search);
+        const categorySlug = params.get('category');
+        const type = params.get('type'); // Для услуг (cars, yachts и т.д.)
+
+        let apiUrl = '/api/tours?populate=*';
+        let titleText = 'Все экскурсии и услуги';
+
+        // Формируем запрос в зависимости от параметра
+        if (categorySlug) {
+            // Фильтр по категории (связь)
+            apiUrl = `/api/tours?filters[category][slug][$eq]=${categorySlug}&populate=*`;
+            titleText = `Категория: ${categorySlug}`;
+        } else if (type) {
+            // Фильтр по типу (например, если бы мы создали поле type в Strapi)
+            // Пока сделаем заглушку: если тип не категория, показываем всё, но можно доработать
+            // Для примера, если type='cars', можно фильтровать по названию категории или тегу
+            // Но пока оставим общий список с заголовком
+            titleText = `Услуги: ${type}`;
+            // Если у тебя есть поле "type" в Strapi, раскомментируй строку ниже:
+            // apiUrl = `/api/tours?filters[type][$eq]=${type}&populate=*`;
+        }
+
+        try {
+            const res = await fetch(`${STRAPI_URL}${apiUrl}`);
+            if (!res.ok) throw new Error('Ошибка сети');
+
+            const json = await res.json();
+            const items = json.data;
+
+            document.getElementById('pageTitle').innerText = titleText;
+
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+
+            if (items.length === 0) {
+                grid.innerHTML = '<div class="loading">В этом разделе пока нет предложений.</div>';
+                return;
+            }
+
+            items.forEach((item, i) => {
+                // Совместимость со структурой Strapi v5
+                const attrs = item.attributes ? item.attributes : item;
+
+                // Безопасное получение картинки
+                const img = getImageUrl(attrs.MainImage || (attrs.gallery && attrs.gallery[0]));
+
+                const isRec = attrs.IsRecommended ? `<div class="badge-recommended">ТУР•ТУР РЕКОМЕНДУЕТ</div>` : '';
+                const rating = attrs.Rating || 5.0;
+
+                // Ссылка ведет на страницу тура
+                const tourSlug = attrs.Slug || attrs.slug || 'no-slug';
+                const link = `tour.html?slug=${tourSlug}`;
+
+                const categoryName = typeof attrs.category === 'string' ? attrs.category : (attrs.category?.data?.attributes?.name || 'Услуга');
+                const price = attrs.price ? Number(attrs.price).toLocaleString() : '0';
+                const currency = attrs.currency_symbol || '$';
+
+                const card = `
+                    <div class="tour-card" onclick="window.location.href='${link}'" data-aos="fade-up" data-aos-delay="${i*50}">
+                        <div class="tour-image-wrapper">
+                            ${isRec}
+                            <div class="tour-rating"><i class="fas fa-star"></i> ${rating}</div>
+                            <img src="${img}" class="tour-image" alt="${attrs.title}" loading="lazy">
+                        </div>
+                        <div class="tour-content">
+                            <div class="tour-category">${categoryName}</div>
+                            <h3 class="tour-title">${attrs.title}</h3>
+                            <div class="tour-price">${currency}${price}</div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+
+            AOS.refresh();
+
+        } catch (e) {
+            console.error(e);
+            document.getElementById('catalogGrid').innerHTML = `<div class="error-msg">Ошибка загрузки данных: ${e.message}</div>`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        AOS.init();
+        loadCatalog();
+    });
+</script>
+</body>
+</html>
