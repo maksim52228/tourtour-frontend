@@ -3,453 +3,697 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ТурТур Пхукет | Экскурсии и услуги</title>
+    <title>Эмоции Жизни</title>
+
     <!-- Шрифты -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
     <!-- Иконки -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Анимации AOS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Яндекс.Карты -->
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+
     <style>
+        /* ===== НАСТРОЙКИ СТИЛЯ ===== */
         :root {
-            --primary: #ff9900; /* Оранжевый акцент */
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --text: #555;
+            --bg: #fefcf7;
+            --primary: #b6977c;
+            --secondary: #8f7a6a;
+            --dark: #2c2b28;
+            --text: #4a4a4a;
+            --text-light: #6b6b6b;
             --white: #ffffff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.08);
-            --transition: all 0.3s ease;
+            --shadow-sm: 0 15px 35px -10px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
+            --transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
             color: var(--text);
-            background-color: var(--light);
             overflow-x: hidden;
+            line-height: 1.7;
+            font-weight: 300;
+            position: relative;
+            cursor: auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(182, 151, 124, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(143, 122, 106, 0.05) 0%, transparent 35%),
+                repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .custom-cursor { display: none; }
+
+        a, button, .tag-card, .service-card, .news-card, .hero-btn, .nav-link, .btn-tg, .section-btn {
+            cursor: pointer;
         }
 
         h1, h2, h3, h4 {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
             color: var(--dark);
-            font-weight: 700;
+            letter-spacing: -0.02em;
         }
+
+        h1 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1; }
+        h2 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; }
+        h3 { font-size: 1.8rem; }
 
         a { text-decoration: none; color: inherit; transition: var(--transition); }
         ul { list-style: none; }
+        img, video { max-width: 100%; display: block; object-fit: cover; width: 100%; height: 100%; }
 
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 30px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* HEADER */
-        header {
-            background: var(--white);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        /* ===== HEADER ===== */
+        .site-header {
             position: fixed;
-            width: 100%;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1000;
+            transition: var(--transition);
+            color: white;
+        }
+
+        .site-header.hero-mode {
+            background: transparent;
+            box-shadow: none;
+            padding: 30px 0;
+        }
+
+        .site-header.hero-mode .logo,
+        .site-header.hero-mode .nav-link,
+        .site-header.hero-mode .phone-link {
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .site-header.hero-mode .btn-tg {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        .site-header.sticky-mode {
+            background: rgba(254, 252, 247, 0.9);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            padding: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .site-header.sticky-mode .header-inner { height: 70px; }
+        .site-header.sticky-mode .logo,
+        .site-header.sticky-mode .nav-link,
+        .site-header.sticky-mode .phone-link { color: var(--dark); text-shadow: none; }
+
+        .site-header.sticky-mode .btn-tg {
+            background: linear-gradient(135deg, var(--primary), #d4b59e);
+            color: white;
+            border: none;
         }
 
         .header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 80px;
+            transition: height 0.4s ease;
+            padding: 0 30px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #logoContainer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            background: var(--primary);
+        }
+
+        .default-logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 20px;
+        }
+
+        .site-header.sticky-mode .logo-icon {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .site-header.sticky-mode .default-logo-icon {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .company-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .nav-menu { display: flex; gap: 40px; }
+
+        .nav-link {
+            font-weight: 400;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s;
+            opacity: 0.6;
+        }
+
+        .nav-link:hover::after { width: 100%; }
+
+        .header-actions { display: flex; align-items: center; gap: 25px; }
+
+        .phone-link {
+            font-weight: 300;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             letter-spacing: 1px;
         }
 
-        .nav-menu {
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-link {
-            font-weight: 600;
-            font-size: 14px;
+        .btn-tg {
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 12px;
             text-transform: uppercase;
-            color: var(--dark);
-            position: relative;
-        }
-
-        .nav-link:hover { color: var(--primary); }
-
-        .header-contact {
+            letter-spacing: 1.5px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 8px;
+            transition: all 0.3s;
         }
 
-        .btn-call {
-            background: var(--primary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 14px;
+        .btn-tg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-call:hover { background: #e68a00; transform: translateY(-2px); }
-
-        /* HERO SECTION */
+        /* ===== HERO SECTION ===== */
         .hero {
-            height: 80vh;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             color: white;
-            margin-top: 80px;
+            background: linear-gradient(135deg, #2c2b28, #4a4a4a);
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 20px;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
+            color: white;
             margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
         .hero p {
             font-size: 1.2rem;
             max-width: 600px;
-            margin: 0 auto 30px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* FILTERS */
-        .filters {
-            padding: 50px 0;
-            text-align: center;
-        }
-
-        .filter-btn {
-            background: white;
-            border: 2px solid #eee;
-            padding: 10px 25px;
-            margin: 5px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
+        .hero-btn {
+            background: transparent;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 400;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
             transition: var(--transition);
-            display: inline-block;
         }
 
-        .filter-btn:hover, .filter-btn.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: #fff5e6;
-        }
-
-        /* TOURS GRID */
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .tours-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            padding-bottom: 80px;
-        }
-
-        .tour-card {
+        .hero-btn:hover {
             background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
+            color: var(--dark);
+            border-color: white;
+        }
+
+        /* ===== SECTIONS GENERAL ===== */
+        .section-header { text-align: center; margin-bottom: 70px; }
+        .section-title { margin-bottom: 15px; color: var(--dark); }
+        .section-subtitle { color: var(--text-light); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 300; }
+
+        .section-buttons {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .section-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--dark);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            transition: var(--transition);
             cursor: pointer;
         }
 
-        .tour-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-        }
-
-        .tour-image-wrapper {
-            position: relative;
-            height: 220px;
-            overflow: hidden;
-        }
-
-        .tour-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .tour-card:hover .tour-image {
-            transform: scale(1.1);
-        }
-
-        .badge-recommended {
-            position: absolute;
-            top: 15px;
-            left: 15px;
+        .section-btn:hover {
             background: var(--primary);
             color: white;
-            padding: 5px 12px;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ===== TAGS & SERVICES ===== */
+        .tags-section { padding: 100px 0; }
+        .tags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+
+        .tag-card {
+            position: relative;
+            height: 500px;
             border-radius: 4px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            z-index: 2;
-            box-shadow: 0 4px 10px rgba(255, 153, 0, 0.4);
-        }
-
-        .tour-rating {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--dark);
-            z-index: 2;
-        }
-
-        .tour-rating i { color: #ffc107; margin-right: 4px; }
-
-        .tour-content {
-            padding: 25px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tour-category {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .tour-title {
-            font-size: 18px;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .tour-desc {
-            font-size: 14px;
-            color: #777;
-            margin-bottom: 20px;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-
-        .tour-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-
-        .tour-price {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .btn-details {
-            color: var(--dark);
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            border-bottom: 2px solid transparent;
-        }
-
-        .btn-details:hover {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        /* SERVICES SECTION */
-        .services-section {
-            background: white;
-            padding: 80px 0;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .service-card {
-            text-align: center;
-            padding: 30px;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
             cursor: pointer;
         }
 
-        .service-card:hover {
-            border-color: var(--primary);
-            background: #fffcf7;
-            transform: translateY(-5px);
-        }
+        .tag-card:hover { box-shadow: var(--shadow-lg); }
+        .tag-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .tag-card:hover .tag-image { transform: scale(1.05); }
 
-        .service-icon {
-            font-size: 40px;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        /* FOOTER */
-        footer {
-            background: var(--dark);
+        .tag-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 40px 30px;
             color: white;
-            padding: 60px 0 20px;
+            transform: translateZ(20px);
         }
 
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
+        .tag-badge {
+            font-size: 26px;
+            font-family: 'Cormorant Garamond', serif;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        .footer-col h4 {
+        .tag-count { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
+
+        .services-section { padding: 100px 0; background: white; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+
+        .service-card {
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            height: 280px;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .service-card:hover { box-shadow: var(--shadow-lg); }
+        .service-bg { transition: transform 0.8s; }
+        .service-card:hover .service-bg { transform: scale(1.05); }
+
+        .service-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            padding: 30px;
             color: white;
-            margin-bottom: 20px;
-            font-size: 18px;
+            transform: translateZ(20px);
         }
 
-        .footer-links li { margin-bottom: 10px; }
-        .footer-links a { color: #aaa; }
-        .footer-links a:hover { color: white; padding-left: 5px; }
-
-        .copyright {
-            text-align: center;
-            border-top: 1px solid #444;
-            padding-top: 20px;
-            color: #777;
-            font-size: 14px;
+        .service-title {
+            color: white;
+            font-size: 26px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+            margin-bottom: 5px;
         }
 
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
-            color: #777;
+        .inspiration-section { padding: 120px 0; background: var(--bg); text-align: center; }
+        .inspiration-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            line-height: 1.2;
+            max-width: 1000px;
+            margin: 0 auto;
+            color: var(--dark);
         }
+
+        /* ===== MAP SECTION ===== */
+        .map-section { padding: 100px 0; background: var(--bg); }
+
+        #phuketMap {
+            height: 500px;
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1;
+            background: #e9e5de;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+        }
+
+        .map-container { position: relative; margin-top: 40px; }
+
+        .map-popup { font-family: 'Inter', sans-serif; font-size: 14px; }
+        .map-popup strong { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--dark); }
+
+        /* ===== NEWS & FOOTER ===== */
+        .news-section { padding: 100px 0; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+
+        .news-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .news-card:hover { box-shadow: var(--shadow-lg); }
+        .news-img-wrapper { height: 250px; overflow: hidden; position: relative; }
+        .news-img { transition: transform 0.8s; }
+        .news-card:hover .news-img { transform: scale(1.05); }
+
+        .hot-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transform: translateZ(30px);
+        }
+
+        .news-content { padding: 35px; transform: translateZ(20px); }
+        .news-date { font-size: 11px; color: #aaa; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
+        .news-title { font-size: 22px; margin-bottom: 15px; line-height: 1.3; font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+        .news-excerpt { font-size: 15px; color: var(--text-light); font-weight: 300; line-height: 1.7; }
+
+        footer { background: var(--dark); color: #aaa; padding: 80px 0 30px; position: relative; z-index: 2; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; margin-bottom: 60px; }
+        .footer-col h4 { color: var(--primary); margin-bottom: 25px; font-size: 16px; letter-spacing: 3px; text-transform: uppercase; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #aaa; font-size: 14px; font-weight: 300; }
+        .footer-links a:hover { color: white; padding-left: 8px; }
+        .copyright { text-align: center; border-top: 1px solid #3a3a3a; padding-top: 30px; color: #666; font-size: 12px; }
+
+        .loading { text-align: center; padding: 50px; color: #999; }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
             .nav-menu { display: none; }
-            .header-contact { display: none; }
+            .header-actions .phone-link { display: none; }
+            .hero p { font-size: 1rem; }
+            .tags-grid, .services-grid, .news-grid { grid-template-columns: 1fr; }
+            .section-buttons { flex-direction: column; align-items: center; }
+            .section-btn { width: 100%; justify-content: center; }
+            #phuketMap { height: 350px; border-radius: 16px; }
+            .logo-icon, .default-logo-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+            .company-name {
+                font-size: 20px;
+                white-space: normal;
+            }
+            #logoContainer {
+                gap: 8px;
+            }
         }
     </style>
 </head>
 <body>
 
     <!-- Header -->
-    <header>
-        <div class="container header-inner">
-            <a href="index.html" class="logo">ТурТур Пхукет</a>
+    <header class="site-header hero-mode" id="siteHeader">
+        <div class="header-inner">
+            <a href="#heroSection" class="logo" id="logoLink">
+                <div id="logoContainer">
+                    <!-- Это будет заменяться через JS -->
+                    <div class="default-logo-icon" id="defaultLogo">
+                        <i class="far fa-compass"></i>
+                    </div>
+                    <span class="company-name" id="companyName">ТурТур·Пхукет</span>
+                </div>
+            </a>
             <nav>
-                <ul class="nav-menu" id="navMenu">
-                    <!-- Категории загрузятся сюда автоматически -->
-                    <li><a href="catalog.html" class="nav-link">Все экскурсии</a></li>
-                    <li><a href="#services" class="nav-link">Услуги</a></li>
-                </ul>
+                <ul class="nav-menu" id="mainNav"></ul>
             </nav>
-            <div class="header-contact">
-                <a href="tel:+1111111111" class="btn-call"><i class="fas fa-phone"></i> +111111111111</a>
+            <div class="header-actions">
+                <a href="tel:+66951905999" class="phone-link" id="phoneLink">
+                    <i class="fas fa-phone"></i> <span id="phoneNumber">+66 95 1905 999</span>
+                </a>
+                <a href="#" target="_blank" class="btn-tg" id="telegramLink">
+                    <i class="fab fa-telegram-plane"></i> Написать
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="container" data-aos="fade-up">
-            <h1>Незабываемый отдых на Пхукете</h1>
-            <p>Лучшие экскурсии, яхты, свадьбы и трансферы с гарантией качества</p>
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-overlay"></div>
+        <video class="hero-video" id="heroVideo" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80"></video>
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="1500">
+            <h1 id="heroTitle">вдохновение<br>на Пхукете</h1>
+            <p id="heroSubtitle">экскурсии · яхты · недвижимость</p>
+            <a href="#popularRoutes" class="hero-btn">
+                <i class="fas fa-arrow-down"></i> исследовать
+            </a>
         </div>
     </section>
 
-    <!-- Filters -->
-    <section class="filters container">
-        <button class="filter-btn active" onclick="filterTours('all')">Все туры</button>
-        <button class="filter-btn" onclick="filterTours('recommended')">ТУР•ТУР Рекомендует</button>
-        <button class="filter-btn" onclick="filterTours('popular')">Популярные</button>
-        <!-- Динамические теги добавятся через JS -->
-        <div id="dynamicTags" style="display:inline;"></div>
-    </section>
-
-    <!-- Tours Grid -->
-    <section class="container">
-        <div class="section-title" data-aos="fade-up">
-            <h2>Наши экскурсии</h2>
-            <p>Выберите приключение по душе</p>
-        </div>
-
-        <div id="toursContainer" class="tours-grid">
-            <div class="loading">Загрузка туров с сервера...</div>
-        </div>
-    </section>
-
-    <!-- Services Preview -->
-    <section class="services-section" id="services">
+    <!-- Inspiration Quote -->
+    <section class="inspiration-section">
         <div class="container">
-            <div class="section-title" data-aos="fade-up">
-                <h2>Наши услуги</h2>
+            <div class="inspiration-text" id="inspirationQuote">
+                Там, где заканчивается карта,<br>начинается настоящее путешествие.
             </div>
-            <div class="services-grid">
-                <div class="service-card" data-aos="zoom-in" data-aos-delay="100" onclick="window.location.href='catalog.html?type=yachts'">
-                    <i class="fas fa-ship service-icon"></i>
-                    <h3>Аренда яхт</h3>
-                    <p>Роскошные катамараны и яхты</p>
-                </div>
-                <div class="service-card" data-aos="zoom-in" data-aos-delay="200" onclick="window.location.href='catalog.html?type=cars'">
-                    <i class="fas fa-car service-icon"></i>
-                    <h3>Аренда авто</h3>
-                    <p>Комфортные автомобили</p>
-                </div>
-                <div class="service-card" data-aos="zoom-in" data-aos-delay="300" onclick="window.location.href='catalog.html?type=weddings'">
-                    <i class="fas fa-ring service-icon"></i>
-                    <h3>Свадьбы</h3>
-                    <p>Организация под ключ</p>
-                </div>
-                <div class="service-card" data-aos="zoom-in" data-aos-delay="400" onclick="window.location.href='catalog.html?type=realty'">
-                    <i class="fas fa-home service-icon"></i>
-                    <h3>Недвижимость</h3>
-                    <p>Виллы и апартаменты</p>
-                </div>
+        </div>
+    </section>
+
+    <!-- Tags Section (Популярные маршруты) -->
+    <section class="tags-section" id="popularRoutes">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Популярные маршруты</h2>
+                <p class="section-subtitle">Выберите свой</p>
+            </div>
+            <div class="tags-grid" id="globalTagsContainer">
+                <div class="loading">загрузка...</div>
+            </div>
+            <div class="section-buttons">
+                <a href="#directions" class="section-btn">
+                    <i class="fas fa-arrow-down"></i> К направлениям
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section (Направления) -->
+    <section class="services-section" id="directions">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Направления</h2>
+                <p class="section-subtitle">всё для вас</p>
+            </div>
+            <div class="services-grid" id="servicesGrid">
+                <div class="loading">загрузка...</div>
+            </div>
+            <div class="section-buttons">
+                <a href="#interactiveMap" class="section-btn">
+                    <i class="fas fa-map"></i> Карта Пхукета
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section" id="interactiveMap">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Карта Пхукета</h2>
+                <p class="section-subtitle">исследуйте остров</p>
+            </div>
+            <div class="map-container" data-aos="fade-up" data-aos-delay="100">
+                <div id="phuketMap"></div>
+            </div>
+            <div class="section-buttons">
+                <a href="#news" class="section-btn">
+                    <i class="fas fa-arrow-down"></i> К новостям
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="news-section" id="news">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Новости и вдохновение</h2>
+                <p class="section-subtitle">последние события</p>
+            </div>
+            <div class="news-grid" id="newsContainer">
+                <div class="loading">загрузка...</div>
+            </div>
+            <div class="section-buttons">
+                <a href="catalog.html?service=news" class="section-btn">
+                    <i class="fas fa-newspaper"></i> Все новости
+                </a>
+                <a href="#heroSection" class="section-btn">
+                    <i class="fas fa-arrow-up"></i> Наверх
+                </a>
             </div>
         </div>
     </section>
@@ -459,28 +703,30 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>ТурТур Пхукет</h4>
-                    <p style="color:#aaa; line-height:1.6;">Ваш надежный партнер для незабываемого отдыха в Таиланде.</p>
+                    <h4 id="footerCompanyName">ТурТур Пхукет</h4>
+                    <p style="color:#aaa; font-weight:300; font-size:14px;" id="footerDescription">Путешествия, которые остаются в сердце.</p>
                 </div>
                 <div class="footer-col">
-                    <h4>Разделы</h4>
-                    <ul class="footer-links">
-                        <li><a href="catalog.html">Экскурсии</a></li>
-                        <li><a href="#services">Услуги</a></li>
-                        <li><a href="#">Контакты</a></li>
+                    <h4>Навигация</h4>
+                    <ul class="footer-links" id="footerLinks">
+                        <li><a href="#heroSection">Главная</a></li>
+                        <li><a href="#popularRoutes">Маршруты</a></li>
+                        <li><a href="#directions">Направления</a></li>
+                        <li><a href="#interactiveMap">Карта</a></li>
+                        <li><a href="#news">Новости</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Контакты</h4>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-phone"></i> +66 95 1905 999</li>
-                        <li><i class="fab fa-whatsapp"></i> WhatsApp</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Пхукет, Таиланд</li>
+                    <ul class="footer-links" id="footerContacts">
+                        <li><i class="fas fa-phone"></i> <span id="footerPhone">+66 95 1905 999</span></li>
+                        <li><i class="fab fa-telegram"></i> <span id="footerTelegram">@tourtour_admin</span></li>
                     </ul>
                 </div>
             </div>
-            <div class="copyright">
-                &copy; 2024 ТурТур Пхукет. Все права защищены.
+            <div class="copyright" id="copyright">
+                &copy; 2025 ТурТур Пхукет
             </div>
         </div>
     </footer>
@@ -488,208 +734,451 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // КОНФИГУРАЦИЯ
+        // Инициализация анимаций
+        AOS.init({
+            duration: 1000,
+            once: false,
+            mirror: true,
+            easing: 'ease-out-cubic',
+            offset: 100
+        });
+
         const STRAPI_URL = 'http://5.8.76.244:1337';
 
-        // Функция получения полной ссылки на картинку
+        // Глобальные переменные для хранения данных из админки
+        let siteSettings = {};
+
+        // Вспомогательные функции для медиа
+        function getMediaUrl(media) {
+            if (!media) return null;
+            if (typeof media === 'string') return media;
+            if (media.url) {
+                return media.url.startsWith('http') ? media.url : STRAPI_URL + media.url;
+            }
+            return null;
+        }
+
         function getImageUrl(image) {
-            if (!image) return 'https://placehold.co/400x300?text=No+Image';
-            let imageUrl = '';
-
-            if (image.url) {
-                imageUrl = image.url;
-            } else if (typeof image === 'string') {
-                imageUrl = image;
-            } else if (image.documentId && image.formats) {
-                imageUrl = image.formats.large?.url || image.formats.medium?.url || image.url;
+            if (!image) return null;
+            if (typeof image === 'string') return image;
+            let url = image.url;
+            if (!url && image.formats) {
+                if (image.formats.large) url = image.formats.large.url;
+                else if (image.formats.medium) url = image.formats.medium.url;
+                else if (image.formats.small) url = image.formats.small.url;
+                else if (image.formats.thumbnail) url = image.formats.thumbnail.url;
             }
-
-            if (imageUrl && imageUrl.startsWith('/')) {
-                return STRAPI_URL + imageUrl;
+            if (url && url.startsWith('/')) {
+                url = STRAPI_URL + url;
             }
-
-            return imageUrl || 'https://placehold.co/400x300?text=No+Image';
+            return url;
         }
 
-        // Загрузка туров
-        async function loadTours() {
+        // Загрузка настроек сайта из админки
+        async function loadSiteSettings() {
             try {
-                const response = await fetch(`${STRAPI_URL}/api/tours?populate=*`);
+                const res = await fetch(`${STRAPI_URL}/api/site-setting?populate=*`);
 
-                if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
-
-                const json = await response.json();
-
-                if (!json.data || !Array.isArray(json.data)) {
-                    document.getElementById('toursContainer').innerHTML = '<div class="loading">Ошибка данных.</div>';
+                if (!res.ok) {
+                    console.log('Настройки сайта не найдены, используем значения по умолчанию');
                     return;
                 }
 
-                const tours = json.data;
-                const container = document.getElementById('toursContainer');
+                const json = await res.json();
 
-                if (tours.length === 0) {
-                    container.innerHTML = '<div class="loading">Нет туров.</div>';
-                    return;
+                if (json.data) {
+                    siteSettings = json.data;
+
+                    // Обновляем логотип
+                    const logoContainer = document.getElementById('logoContainer');
+                    const companyNameSpan = document.getElementById('companyName');
+
+                    if (siteSettings.logo) {
+                        const logoUrl = getImageUrl(siteSettings.logo);
+                        if (logoUrl) {
+                            const logoHtml = `
+                                <img src="${logoUrl}" alt="${siteSettings.companyName || 'Логотип'}" class="logo-icon">
+                                <span class="company-name" id="companyName">${siteSettings.companyName || 'ТурТур·Пхукет'}</span>
+                            `;
+                            logoContainer.innerHTML = logoHtml;
+                        } else {
+                            if (siteSettings.companyName && companyNameSpan) {
+                                companyNameSpan.textContent = siteSettings.companyName;
+                            }
+                        }
+                    } else {
+                        if (siteSettings.companyName && companyNameSpan) {
+                            companyNameSpan.textContent = siteSettings.companyName;
+                        }
+                    }
+
+                    // Обновляем название компании в футере
+                    const footerCompanyName = document.getElementById('footerCompanyName');
+                    const copyrightElement = document.getElementById('copyright');
+
+                    if (siteSettings.companyName) {
+                        if (footerCompanyName) footerCompanyName.textContent = siteSettings.companyName;
+                        if (copyrightElement) copyrightElement.innerHTML = `&copy; ${new Date().getFullYear()} ${siteSettings.companyName}`;
+                    }
+
+                    // Обновляем телефон
+                    const phoneNumberElement = document.getElementById('phoneNumber');
+                    const footerPhone = document.getElementById('footerPhone');
+                    const phoneLink = document.getElementById('phoneLink');
+
+                    if (siteSettings.phone) {
+                        if (phoneNumberElement) phoneNumberElement.textContent = siteSettings.phone;
+                        if (footerPhone) footerPhone.textContent = siteSettings.phone;
+                        if (phoneLink) phoneLink.href = `tel:${siteSettings.phone.replace(/\s+/g, '')}`;
+                    }
+
+                    // Обновляем Telegram
+                    const telegramLink = document.getElementById('telegramLink');
+                    const footerTelegram = document.getElementById('footerTelegram');
+
+                    if (siteSettings.telegram) {
+                        if (telegramLink) {
+                            let telegramUsername = siteSettings.telegram;
+                            telegramUsername = telegramUsername.replace('@', '');
+                            telegramLink.href = `https://t.me/${telegramUsername}`;
+                        }
+                        if (footerTelegram) {
+                            footerTelegram.textContent = siteSettings.telegram.startsWith('@') ?
+                                siteSettings.telegram : `@${siteSettings.telegram}`;
+                        }
+                    }
+
+                    // Обновляем hero текст
+                    if (siteSettings.heroTitle) {
+                        const heroTitle = document.getElementById('heroTitle');
+                        if (heroTitle) heroTitle.innerHTML = siteSettings.heroTitle.replace(/\n/g, '<br>');
+                    }
+
+                    if (siteSettings.heroSubtitle) {
+                        const heroSubtitle = document.getElementById('heroSubtitle');
+                        if (heroSubtitle) heroSubtitle.textContent = siteSettings.heroSubtitle;
+                    }
+
+                    // Обновляем цитату
+                    if (siteSettings.inspirationQuote) {
+                        const inspirationQuote = document.getElementById('inspirationQuote');
+                        if (inspirationQuote) {
+                            inspirationQuote.innerHTML = siteSettings.inspirationQuote.replace(/\n/g, '<br>');
+                        }
+                    }
+
+                    // Обновляем описание в футере
+                    if (siteSettings.footerDescription) {
+                        const footerDescription = document.getElementById('footerDescription');
+                        if (footerDescription) footerDescription.textContent = siteSettings.footerDescription;
+                    }
                 }
-
-                container.innerHTML = '';
-                const dynamicTagsContainer = document.getElementById('dynamicTags');
-                const allTags = new Set();
-
-                tours.forEach((item, index) => {
-                    // Strapi v5 compatibility
-                    const attrs = item.attributes ? item.attributes : item;
-
-                    const isRecommended = attrs.IsRecommended === true;
-                    const isPopular = attrs.IsPopular === true;
-
-                    const badgeHtml = isRecommended
-                        ? `<div class="badge-recommended">ТУР•ТУР РЕКОМЕНДУЕТ</div>`
-                        : '';
-
-                    const rating = attrs.Rating || 5.0;
-
-                    let categoryName = 'Экскурсия';
-                    if (typeof attrs.category === 'string') {
-                        categoryName = attrs.category;
-                    } else if (attrs.category?.data?.attributes?.name) {
-                        categoryName = attrs.category.data.attributes.name;
-                    }
-
-                    let description = attrs.short_description || 'Описание...';
-                    if (attrs.description && Array.isArray(attrs.description)) {
-                        const firstBlock = attrs.description.find(b => b.type === 'paragraph');
-                        if (firstBlock?.children) {
-                            description = firstBlock.children.map(c => c.text).join('');
-                        }
-                    }
-
-                    let mainImage = attrs.MainImage;
-                    if (!mainImage && attrs.gallery && attrs.gallery.length > 0) {
-                        mainImage = attrs.gallery[0];
-                    }
-
-                    const imageUrl = getImageUrl(mainImage);
-
-                    // Обработка тегов
-                    let tags = [];
-                    if (attrs.Tags) {
-                        if (Array.isArray(attrs.Tags)) tags = attrs.Tags;
-                        else if (typeof attrs.Tags === 'string') {
-                            try { tags = JSON.parse(attrs.Tags); } catch(e) {}
-                        }
-                    }
-                    tags.forEach(tag => allTags.add(tag));
-
-                    const card = document.createElement('div');
-                    card.className = 'tour-card';
-                    card.setAttribute('data-aos', 'fade-up');
-                    card.setAttribute('data-aos-delay', (index % 3) * 100);
-
-                    // Сохраняем данные для фильтрации
-                    card.dataset.tags = tags.join(',');
-                    if (isPopular) card.classList.add('tour-popular');
-                    if (isRecommended) card.classList.add('tour-recommended');
-
-                    // Ссылка на страницу тура
-                    const tourSlug = attrs.Slug || attrs.slug || 'no-slug';
-
-                    card.innerHTML = `
-                        <div class="tour-image-wrapper">
-                            ${badgeHtml}
-                            <div class="tour-rating"><i class="fas fa-star"></i> ${rating}</div>
-                            <img src="${imageUrl}" alt="${attrs.title}" class="tour-image" loading="lazy" onerror="this.src='https://placehold.co/400x300?text=Нет+фото'">
-                        </div>
-                        <div class="tour-content">
-                            <div class="tour-category">${categoryName}</div>
-                            <h3 class="tour-title">${attrs.title}</h3>
-                            <p class="tour-desc">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</p>
-                            <div class="tour-footer">
-                                <div class="tour-price">${attrs.currency_symbol || '$'}${attrs.price || '0'}</div>
-                                <a href="tour.html?slug=${tourSlug}" class="btn-details">Подробнее <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    `;
-
-                    container.appendChild(card);
-                });
-
-                // Создаем кнопки для уникальных тегов
-                allTags.forEach(tag => {
-                    const btn = document.createElement('button');
-                    btn.className = 'filter-btn';
-                    btn.innerText = tag;
-                    btn.onclick = () => filterTours(tag, btn);
-                    dynamicTagsContainer.appendChild(btn);
-                });
-
-                AOS.refresh();
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                document.getElementById('toursContainer').innerHTML = `<div style="color:red">Ошибка: ${error.message}</div>`;
+            } catch (e) {
+                console.error('Ошибка загрузки настроек сайта:', e);
             }
         }
 
-        // Функция фильтрации
-        function filterTours(filterType, btnElement) {
-            const cards = document.querySelectorAll('.tour-card');
+        // Загрузка видео героя
+        async function loadHeroVideo() {
+            try {
+                const videoElement = document.getElementById('heroVideo');
+                if (!videoElement) return;
+                const res = await fetch(`${STRAPI_URL}/api/home-page?populate=heroVideo`);
+                const json = await res.json();
+                if (json.data && json.data.heroVideo) {
+                    const videoUrl = getMediaUrl(json.data.heroVideo);
+                    if (videoUrl) {
+                        const source = document.createElement('source');
+                        source.src = videoUrl;
+                        source.type = 'video/mp4';
+                        while (videoElement.firstChild) {
+                            videoElement.removeChild(videoElement.firstChild);
+                        }
+                        videoElement.appendChild(source);
+                        videoElement.load();
+                        videoElement.play().catch(e => console.log('Автовоспроизведение заблокировано:', e));
+                    }
+                }
+            } catch (e) {
+                console.error('Ошибка загрузки видео:', e);
+            }
+        }
 
-            // Управление активной кнопкой
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
+        // Логика хедера
+        const header = document.getElementById('siteHeader');
+        function updateHeaderMode() {
+            if (window.scrollY > 50) {
+                header.classList.remove('hero-mode');
+                header.classList.add('sticky-mode');
+            } else {
+                header.classList.remove('sticky-mode');
+                header.classList.add('hero-mode');
+            }
+        }
+        window.addEventListener('scroll', () => requestAnimationFrame(updateHeaderMode));
+        updateHeaderMode();
+
+        // Эффект наклона карточек
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.tag-card, .service-card, .news-card');
 
             cards.forEach(card => {
-                const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
-                const isPopular = card.classList.contains('tour-popular');
-                const isRecommended = card.classList.contains('tour-recommended');
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
 
-                let show = false;
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
 
-                if (filterType === 'all') show = true;
-                else if (filterType === 'recommended') show = isRecommended;
-                else if (filterType === 'popular') show = isPopular;
-                else show = tags.includes(filterType);
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
 
-                card.style.display = show ? 'flex' : 'none';
+                    const maxAngle = 3;
+
+                    const percentX = (x - centerX) / centerX;
+                    const percentY = (y - centerY) / centerY;
+
+                    const rotateY = percentX * maxAngle;
+                    const rotateX = -percentY * maxAngle;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(2px)`;
+                    card.style.transition = 'transform 0.1s ease';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+                    card.style.transition = 'transform 0.3s ease';
+                });
             });
         }
 
-        // Загрузка категорий в меню
-        async function loadCategories() {
-            try {
-                const res = await fetch(`${STRAPI_URL}/api/categories?populate=*`);
-                const json = await res.json();
-                const cats = json.data;
-                const nav = document.getElementById('navMenu');
+        // === Функции для карты ===
+        async function initPhuketMap() {
+            const mapContainer = document.getElementById('phuketMap');
+            if (!mapContainer) return;
 
-                // Очищаем статические ссылки, оставляем только динамические
-                nav.innerHTML = '';
+            console.log('Инициализация карты...');
 
-                cats.forEach(cat => {
-                    const slug = cat.attributes.slug;
-                    const name = cat.attributes.name;
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="catalog.html?category=${slug}" class="nav-link">${name}</a>`;
-                    nav.appendChild(li);
+            ymaps.ready(async function() {
+                const map = new ymaps.Map('phuketMap', {
+                    center: [7.8804, 98.3923],
+                    zoom: 10,
+                    controls: ['zoomControl', 'fullscreenControl']
                 });
 
-                // Добавляем ссылку на услуги
-                const servicesLi = document.createElement('li');
-                servicesLi.innerHTML = `<a href="#services" class="nav-link">Услуги</a>`;
-                nav.appendChild(servicesLi);
+                map.controls.remove('searchControl');
+                map.controls.remove('trafficControl');
+                map.controls.remove('typeSelector');
 
+                try {
+                    console.log('Загрузка данных об экскурсиях...');
+                    const response = await fetch(`${STRAPI_URL}/api/tours?fields=title,price,location,place,slug&populate=*`);
+
+                    if (!response.ok) throw new Error('Ошибка сети при загрузке экскурсий');
+
+                    const json = await response.json();
+                    const tours = json.data || [];
+
+                    if (tours.length === 0) {
+                        console.log('Экскурсии не найдены.');
+                        return;
+                    }
+
+                    console.log(`Найдено экскурсий: ${tours.length}. Начинаем поиск координат...`);
+
+                    for (const tour of tours) {
+                        let locationName = tour.location || tour.place;
+
+                        if (!locationName) continue;
+                        if (locationName.length < 3 || /^[а-яА-Я]+$/.test(locationName)) {
+                            console.warn(`❌ Пропускаем невалидное название: "${locationName}"`);
+                            continue;
+                        }
+
+                        const title = tour.title || 'Экскурсия';
+                        const price = tour.price ? `${tour.price} ฿` : '';
+                        const slug = tour.slug;
+
+                        const searchQuery = `${locationName}, Phuket, Thailand`;
+                        console.log(`🔍 Ищем: "${locationName}"`);
+
+                        const coords = await new Promise((resolve) => {
+                            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data && data.length > 0) {
+                                        resolve([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+                                    } else {
+                                        resolve(null);
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(`Ошибка геокодирования для ${locationName}:`, err);
+                                    resolve(null);
+                                });
+                        });
+
+                        if (coords) {
+                            console.log(`✅ Найдено: ${coords}. Добавляем метку.`);
+
+                            const placemark = new ymaps.Placemark(coords, {
+                                balloonContentHeader: `<strong style="font-family:'Cormorant Garamond'; font-size:18px;">${title}</strong>`,
+                                balloonContentBody: `
+                                    <div style="font-family:'Inter'; font-size:13px; line-height:1.5;">
+                                        <p style="margin-bottom:8px; color:#555;">📍 ${locationName}</p>
+                                        <p style="font-weight:bold; color:#b6977c; font-size:15px; margin-bottom:12px;">${price}</p>
+                                        <a href="tour.html?slug=${slug}" style="display:inline-block; background:#b6977c; color:white; padding:6px 14px; text-decoration:none; border-radius:20px; font-size:12px;">Подробнее</a>
+                                    </div>
+                                `,
+                                hintContent: title
+                            }, {
+                                preset: 'islands#blueDotIcon',
+                                iconColor: '#007bff'
+                            });
+
+                            map.geoObjects.add(placemark);
+                        } else {
+                            console.warn(`❌ Не найдено место: "${locationName}"`);
+                        }
+                    }
+
+                    console.log('Обработка экскурсий завершена.');
+
+                } catch (error) {
+                    console.error('Критическая ошибка в функции карты:', error);
+                }
+
+                setTimeout(() => AOS.refresh(), 300);
+            });
+        }
+
+        // Загрузка популярных маршрутов (тегов)
+        async function loadPopularRoutes() {
+            const container = document.getElementById('globalTagsContainer');
+            try {
+                const res = await fetch(`${STRAPI_URL}/api/tags?populate[tours]=true&populate[image]=true`);
+                const json = await res.json();
+                if (!json.data || json.data.length === 0) {
+                    container.innerHTML = '<div class="loading">нет категорий</div>';
+                    return;
+                }
+                container.innerHTML = json.data.map((tag, i) => {
+                    const emoji = tag.emoji || '🌴';
+                    const name = tag.name || 'Категория';
+                    const toursCount = tag.tours && Array.isArray(tag.tours) ? tag.tours.length : 0;
+                    let imageUrl = getImageUrl(tag.image);
+
+                    const imageHtml = imageUrl
+                        ? `<img src="${imageUrl}" class="tag-image" alt="${name}" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div style=\'background: linear-gradient(145deg, #e4d7cf, #cfb8aa); display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size:70px;\'>${emoji}</div>'">`
+                        : `<div style="background: linear-gradient(145deg, #e4d7cf, #cfb8aa); display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size:70px;">${emoji}</div>`;
+
+                    return `
+                        <div class="tag-card" onclick="window.location.href='catalog.html?tag=${tag.id}'" data-aos="fade-up" data-aos-delay="${i*70}">
+                            ${imageHtml}
+                            <div class="tag-overlay">
+                                <span class="tag-badge">${name}</span>
+                                <span class="tag-count">${toursCount} экскурсий</span>
+                            </div>
+                        </div>`;
+                }).join('');
+                initTiltEffect();
             } catch (e) {
-                console.log('Категории не загрузились, используем стандартное меню');
+                console.error('Ошибка загрузки тегов:', e);
+                container.innerHTML = '<div class="loading">ошибка загрузки</div>';
             }
         }
 
-        // Инициализация
+        // Загрузка категорий услуг (направлений)
+        async function loadServiceDirections() {
+            const nav = document.getElementById('mainNav');
+            const grid = document.getElementById('servicesGrid');
+            try {
+                const res = await fetch(`${STRAPI_URL}/api/service-categories?populate=*&sort=order:asc`);
+                const json = await res.json();
+                if (!json.data || json.data.length === 0) {
+                    grid.innerHTML = '<div class="loading">нет направлений</div>';
+                    return;
+                }
+                let navHtml = '<li><a href="#heroSection" class="nav-link">Главная</a></li>';
+                let gridHtml = '';
+
+                json.data.forEach((cat, i) => {
+                    const slug = cat.slug || `cat-${cat.id}`;
+                    const name = cat.name || 'Направление';
+                    const iconUrl = getImageUrl(cat.icon) || `https://placehold.co/600x400/b6977c/ffffff?text=${encodeURIComponent(name)}`;
+
+                    navHtml += `<li><a href="catalog.html?service=${slug}" class="nav-link">${name}</a></li>`;
+                    gridHtml += `
+                        <div class="service-card" onclick="window.location.href='catalog.html?service=${slug}'" data-aos="fade-up" data-aos-delay="${i*70}">
+                            <img src="${iconUrl}" class="service-bg" alt="${name}" loading="lazy" onerror="this.src='https://placehold.co/600x400/b6977c/ffffff?text=${encodeURIComponent(name)}'">
+                            <div class="service-content"><h3 class="service-title">${name}</h3></div>
+                        </div>`;
+                });
+
+                navHtml += `<li><a href="catalog.html" class="nav-link">Каталог</a></li>`;
+                nav.innerHTML = navHtml;
+
+                const footerLinks = document.getElementById('footerLinks');
+                if (footerLinks) {
+                    footerLinks.innerHTML = `
+                        <li><a href="#heroSection">Главная</a></li>
+                        <li><a href="#popularRoutes">Маршруты</a></li>
+                        <li><a href="#directions">Направления</a></li>
+                        <li><a href="#interactiveMap">Карта</a></li>
+                        <li><a href="#news">Новости</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>`;
+                }
+
+                grid.innerHTML = gridHtml;
+                initTiltEffect();
+            } catch (e) {
+                console.error('Ошибка загрузки направлений:', e);
+                grid.innerHTML = '<div class="loading">ошибка загрузки</div>';
+            }
+        }
+
+        // Загрузка новостей
+        async function loadNews() {
+            const container = document.getElementById('newsContainer');
+            try {
+                const res = await fetch(`${STRAPI_URL}/api/news?populate=*&sort=publishedAt:desc&pagination[limit]=3`);
+                const json = await res.json();
+                if (!json.data || json.data.length === 0) {
+                    container.innerHTML = '<div class="loading">нет новостей</div>';
+                    return;
+                }
+                container.innerHTML = json.data.map((item, i) => {
+                    const img = getImageUrl(item.coverImage) || 'https://placehold.co/600x400/b6977c/ffffff?text=news';
+                    const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                    return `
+                        <div class="news-card" data-aos="fade-up" data-aos-delay="${i*70}">
+                            <div class="news-img-wrapper">
+                                <img src="${img}" class="news-img" alt="" loading="lazy" onerror="this.src='https://placehold.co/600x400/b6977c/ffffff?text=news'">
+                                ${item.isHot ? '<span class="hot-badge">горячее</span>' : ''}
+                            </div>
+                            <div class="news-content">
+                                <span class="news-date">${date}</span>
+                                <h3 class="news-title">${item.title || ''}</h3>
+                                <p class="news-excerpt">${item.excerpt || ''}</p>
+                            </div>
+                        </div>`;
+                }).join('');
+                initTiltEffect();
+            } catch (e) {
+                console.error('Ошибка загрузки новостей:', e);
+                container.innerHTML = '<div class="loading">ошибка загрузки</div>';
+            }
+        }
+
+        // Старт при загрузке страницы
         document.addEventListener('DOMContentLoaded', () => {
-            AOS.init({ duration: 800, once: true });
-            loadTours();
-            loadCategories();
+            loadSiteSettings().then(() => {
+                loadHeroVideo();
+                loadPopularRoutes();     // переименовано с loadGlobalTags
+                loadServiceDirections(); // переименовано с loadServiceCategories
+                loadNews();
+                initPhuketMap();
+                setTimeout(() => AOS.refresh(), 500);
+            });
         });
     </script>
 </body>

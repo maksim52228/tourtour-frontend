@@ -8,40 +8,124 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        :root { --primary: #ff9900; --dark: #2c3e50; --light: #f8f9fa; }
-        body { font-family: 'Open Sans', sans-serif; margin: 0; background: var(--light); padding-top: 80px; }
+        :root {
+            --primary: #b6977c;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            background: var(--light);
+            padding-top: 80px;
+        }
+
         h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--dark); }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* Header */
-        header { background: white; padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 20px; }
-        .back-btn { text-decoration: none; color: var(--dark); font-weight: 600; cursor: pointer; }
-        .back-btn:hover { color: var(--primary); }
+        header {
+            background: white; padding: 15px 0; position: fixed; top: 0; width: 100%;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto; padding: 0 20px;
+        }
+        .logo {
+            font-weight: 800; color: var(--primary); text-decoration: none;
+            font-size: 20px; text-transform: uppercase;
+        }
+        .back-btn {
+            text-decoration: none; color: var(--dark); font-weight: 600;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .back-btn:hover { color: var(--primary); transform: translateX(-5px); }
 
-        /* Grid */
-        .tours-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; padding: 40px 0; }
-        .tour-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: transform 0.3s; cursor: pointer; display: flex; flex-direction: column; }
-        .tour-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        .page-title { text-align: center; margin: 40px 0 20px; font-size: 2.5rem; }
 
-        .tour-image-wrapper { height: 220px; position: relative; background: #eee; }
-        .tour-image { width: 100%; height: 100%; object-fit: cover; }
+        /* Сетки */
+        .services-grid, .categories-grid, .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0 60px;
+        }
 
-        .tour-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .tour-category { font-size: 12px; color: #999; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
-        .tour-title { font-size: 18px; margin: 10px 0; font-weight: 700; line-height: 1.4; flex-grow: 1; }
-        .tour-price { color: var(--primary); font-weight: 800; font-size: 20px; margin-top: 15px; }
+        /* Карточки */
+        .service-card, .category-card, .tour-card {
+            background: white; border-radius: 15px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease; cursor: pointer;
+            display: flex; flex-direction: column; height: 300px; position: relative;
+        }
 
-        .badge-recommended { position: absolute; top: 10px; left: 10px; background: var(--primary); color: white; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; z-index: 2; }
-        .tour-rating { position: absolute; top: 10px; right: 10px; background: white; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 14px; z-index: 2; }
+        .tour-card { height: auto; min-height: 300px; }
+
+        .service-card:hover, .category-card:hover, .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .image-wrapper {
+            height: 200px; position: relative; background: #eee; overflow: hidden;
+        }
+        .tour-image-wrapper { height: 220px; position: relative; background: #eee; overflow: hidden; }
+
+        .card-image, .tour-image {
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;
+        }
+        .card:hover .card-image, .tour-card:hover .tour-image { transform: scale(1.1); }
+
+        .content {
+            padding: 20px; flex-grow: 1; display: flex; flex-direction: column;
+            justify-content: center;
+        }
+        .tour-content { justify-content: flex-start; }
+
+        .title {
+            font-size: 20px; margin: 0; font-weight: 700; line-height: 1.4;
+            color: var(--dark); text-align: center;
+        }
+        .tour-title { text-align: left; font-size: 18px; margin: 10px 0; flex-grow: 1; }
+
+        /* Элементы экскурсии */
+        .tour-category {
+            font-size: 12px;
+            color: #b6977c;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            background: rgba(182, 151, 124, 0.1);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .tour-price {
+            color: var(--primary); font-weight: 800; font-size: 22px;
+            margin-top: 15px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .badge-recommended {
+            position: absolute; top: 10px; left: 10px; background: var(--primary);
+            color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px;
+            font-weight: 800; text-transform: uppercase; z-index: 2;
+            box-shadow: 0 2px 10px rgba(182, 151, 124, 0.4);
+        }
+        .tour-rating {
+            position: absolute; top: 10px; right: 10px; background: white;
+            padding: 5px 10px; border-radius: 8px; font-weight: 700; font-size: 14px;
+            z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex; align-items: center; gap: 5px;
+        }
         .tour-rating i { color: #ffc107; }
 
         .loading { text-align: center; padding: 50px; font-size: 20px; color: #777; grid-column: 1/-1; }
-        .error-msg { text-align: center; padding: 50px; color: red; grid-column: 1/-1; }
+        .error-msg { text-align: center; padding: 50px; color: #d9534f; background: #fff; border-radius: 10px; grid-column: 1/-1; }
 
         @media (max-width: 768px) {
-            .tours-grid { grid-template-columns: 1fr; }
+            .services-grid, .categories-grid, .tours-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 2rem; }
         }
     </style>
 </head>
@@ -49,15 +133,15 @@
 
 <header>
     <div class="nav-inner">
-        <a href="index.html" class="logo">ТУРТУР ПХУКЕТ</a>
+        <a href="index.html" class="logo"><i class="fas fa-umbrella-beach"></i> ТурТур Пхукет</a>
         <span class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Назад</span>
     </div>
 </header>
 
 <div class="container">
-    <h1 id="pageTitle" style="margin-top: 40px; text-align: center;">Загрузка...</h1>
-    <div id="catalogGrid" class="tours-grid">
-        <div class="loading">Загрузка каталога...</div>
+    <h1 id="pageTitle" class="page-title">Загрузка...</h1>
+    <div id="catalogGrid" class="services-grid">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка каталога...</div>
     </div>
 </div>
 
@@ -65,112 +149,295 @@
 <script>
     const STRAPI_URL = 'http://5.8.76.244:1337';
 
-    // Универсальная функция получения картинки (защищена от ошибок)
     function getImageUrl(image) {
-        if (!image) return 'https://placehold.co/400x300?text=Нет+фото';
-
-        let url = null;
-        if (typeof image === 'string') {
-            url = image;
-        } else if (image.url) {
-            url = image.url;
-        } else if (image.data && image.data.attributes && image.data.attributes.url) {
-            url = image.data.attributes.url;
-        } else if (image.formats) {
-            url = image.formats.large?.url || image.formats.medium?.url || image.url;
+        if (!image) return 'https://placehold.co/600x400?text=Нет+фото';
+        if (typeof image === 'string') return image.startsWith('/') ? STRAPI_URL + image : image;
+        if (image.data && image.data.url) return image.data.url.startsWith('/') ? STRAPI_URL + image.data.url : image.data.url;
+        if (image.formats) {
+            const formats = ['large', 'medium', 'small', 'thumbnail'];
+            for (const f of formats) {
+                if (image.formats[f] && image.formats[f].url) {
+                    return image.formats[f].url.startsWith('/') ? STRAPI_URL + image.formats[f].url : image.formats[f].url;
+                }
+            }
         }
-
-        if (url && url.startsWith('/')) {
-            return STRAPI_URL + url;
-        }
-        return url || 'https://placehold.co/400x300?text=Нет+фото';
+        if (image.url) return image.url.startsWith('/') ? STRAPI_URL + image.url : image.url;
+        return 'https://placehold.co/600x400?text=Нет+фото';
     }
 
-    async function loadCatalog() {
-        const params = new URLSearchParams(window.location.search);
-        const categorySlug = params.get('category');
-        const type = params.get('type'); // Для услуг (cars, yachts и т.д.)
+    // Отрисовка подкатегорий
+    function renderSubCategories(categories, container, parentSlug) {
+        container.innerHTML = '';
+        categories.forEach((cat, i) => {
+            const name = cat.name || 'Категория';
+            const id = cat.id;
+            let imgUrl = cat.image ? getImageUrl(cat.image) : `https://placehold.co/600x400/ff9900/white?text=${encodeURIComponent(name)}`;
+            const newUrl = `catalog.html?service=${parentSlug}&category=${id}`;
 
-        let apiUrl = '/api/tours?populate=*';
-        let titleText = 'Все экскурсии и услуги';
+            const card = `
+                <div class="category-card" onclick="window.location.href='${newUrl}'" data-aos="fade-up" data-aos-delay="${i*50}">
+                    <div class="image-wrapper">
+                        <img src="${imgUrl}" class="card-image" alt="${name}" loading="lazy">
+                        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-arrow-right" style="color:white; font-size:40px;"></i>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <h3 class="title">${name}</h3>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+        AOS.refresh();
+    }
 
-        // Формируем запрос в зависимости от параметра
-        if (categorySlug) {
-            // Фильтр по категории (связь)
-            apiUrl = `/api/tours?filters[category][slug][$eq]=${categorySlug}&populate=*`;
-            titleText = `Категория: ${categorySlug}`;
-        } else if (type) {
-            // Фильтр по типу (например, если бы мы создали поле type в Strapi)
-            // Пока сделаем заглушку: если тип не категория, показываем всё, но можно доработать
-            // Для примера, если type='cars', можно фильтровать по названию категории или тегу
-            // Но пока оставим общий список с заголовком
-            titleText = `Услуги: ${type}`;
-            // Если у тебя есть поле "type" в Strapi, раскомментируй строку ниже:
-            // apiUrl = `/api/tours?filters[type][$eq]=${type}&populate=*`;
+    // Отрисовка экскурсий
+    function renderTours(toursData, container) {
+        container.innerHTML = '';
+        if (!toursData || toursData.length === 0) {
+            container.innerHTML = '<div class="loading">😕 Здесь пока пусто.</div>';
+            return;
+        }
+        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+
+        toursData.forEach((item, i) => {
+            const title = item.title || 'Без названия';
+            const slug = item.slug;
+            if (!slug) return;
+
+            let imgUrl = null;
+            ['main_image', 'mainImage', 'image', 'cover'].forEach(f => { if (!imgUrl && item[f]) imgUrl = getImageUrl(item[f]); });
+            if (!imgUrl && item.images && item.images.length) imgUrl = getImageUrl(item.images[0]);
+            if (!imgUrl) imgUrl = 'https://placehold.co/400x300?text=Нет+фото';
+
+            const price = item.price ? Number(item.price).toLocaleString() : '0';
+            const currency = item.currency || '$';
+            const rating = item.rating || 5.0;
+            const isPopular = item.is_popular || item.isPopular;
+            const link = `${basePath}tour.html?slug=${encodeURIComponent(slug)}`;
+
+            const card = `
+                <div class="tour-card" onclick="window.location.href='${link}'" data-aos="fade-up" data-aos-delay="${i*50}">
+                    <div class="tour-image-wrapper">
+                        ${isPopular ? '<div class="badge-recommended">🔥 Хит</div>' : ''}
+                        <div class="tour-rating"><i class="fas fa-star"></i> ${rating}</div>
+                        <img src="${imgUrl}" class="tour-image" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="tour-content">
+                        <div class="tour-category">Экскурсия</div>
+                        <h3 class="tour-title">${title}</h3>
+                        <div class="tour-price">
+                            <span>${currency}${price}</span>
+                            <span style="font-size:14px; font-weight:600; color:#555;">Подробнее <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+        AOS.refresh();
+    }
+
+    // Отрисовка новостей
+    function renderNews(newsData, container) {
+        container.innerHTML = '';
+        if (!newsData || newsData.length === 0) {
+            container.innerHTML = '<div class="loading">😕 Новостей пока нет.</div>';
+            return;
         }
 
+        newsData.forEach((item, i) => {
+            const title = item.title || 'Без названия';
+            let imgUrl = item.coverImage ? getImageUrl(item.coverImage) : (item.image ? getImageUrl(item.image) : 'https://placehold.co/600x400?text=News');
+            const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ru-RU', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            }) : '';
+            let fullText = item.content || item.body || item.fullText || item.excerpt || '';
+            const isHot = item.isHot || false;
+
+            const card = `
+                <div class="tour-card" data-aos="fade-up" data-aos-delay="${i*50}" style="cursor: default;">
+                    <div class="tour-image-wrapper">
+                        ${isHot ? '<div class="badge-recommended" style="background:#ff4757;">🔥 Горячее</div>' : ''}
+                        <img src="${imgUrl}" class="tour-image" alt="${title}" loading="lazy" style="pointer-events: none;">
+                    </div>
+                    <div class="tour-content">
+                        <div style="font-size:12px; color:#999; margin-bottom:8px; font-weight:600;">
+                            <i class="far fa-calendar-alt"></i> ${date}
+                        </div>
+                        <h3 class="tour-title" style="font-size:20px; margin-bottom:15px; line-height:1.3; color:var(--dark);">${title}</h3>
+                        <div style="font-size:15px; color:#555; line-height:1.6; white-space: pre-wrap; text-align: left;">
+                            ${fullText}
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+        AOS.refresh();
+    }
+
+    // Основная функция загрузки каталога
+    async function loadCatalog() {
+        const params = new URLSearchParams(window.location.search);
+        const serviceSlug = params.get('service');
+        const categoryId = params.get('category');
+        const tagId = params.get('tag');
+        const newsCatId = params.get('news-cat-id');
+
+        const grid = document.getElementById('catalogGrid');
+        const titleEl = document.getElementById('pageTitle');
+
         try {
-            const res = await fetch(`${STRAPI_URL}${apiUrl}`);
-            if (!res.ok) throw new Error('Ошибка сети');
+            // 1. НОВОСТИ
+            if (newsCatId) {
+                const catInfoRes = await fetch(`${STRAPI_URL}/api/news?filters[id][$eq]=${newsCatId}&populate=*`);
+                const catInfoJson = await catInfoRes.json();
 
-            const json = await res.json();
-            const items = json.data;
+                if (catInfoJson.data && catInfoJson.data.length > 0) {
+                    categoryName = catInfoJson.data[0].name;
+                    titleEl.innerText = categoryName;
+                    grid.className = 'tours-grid';
 
-            document.getElementById('pageTitle').innerText = titleText;
+                    const newsUrl = `${STRAPI_URL}/api/news?filters[news_category][id][$eq]=${newsCatId}&populate=*`;
+                    const newsRes = await fetch(newsUrl);
+                    if (!newsRes.ok) throw new Error(`Ошибка загрузки новостей: ${newsRes.status}`);
 
-            const grid = document.getElementById('catalogGrid');
-            grid.innerHTML = '';
+                    const newsJson = await newsRes.json();
+                    if (newsJson.data && newsJson.data.length > 0) {
+                        renderNews(newsJson.data, grid);
+                        return;
+                    } else {
+                        grid.innerHTML = '<div class="loading">В этой категории пока нет новостей.</div>';
+                        return;
+                    }
+                }
+            }
 
-            if (items.length === 0) {
-                grid.innerHTML = '<div class="loading">В этом разделе пока нет предложений.</div>';
+            // 2. РАЗДЕЛ "НОВОСТИ"
+            if (serviceSlug && serviceSlug === 'news') {
+                titleEl.innerText = "Новости";
+                grid.className = 'tours-grid';
+
+                const allNewsUrl = `${STRAPI_URL}/api/news?populate=*`;
+                const allNewsRes = await fetch(allNewsUrl);
+
+                if (!allNewsRes.ok) {
+                    throw new Error(`Ошибка загрузки новостей: ${allNewsRes.status}`);
+                }
+
+                const allNewsJson = await allNewsRes.json();
+
+                if (allNewsJson.data && allNewsJson.data.length > 0) {
+                    renderNews(allNewsJson.data, grid);
+                } else {
+                    grid.innerHTML = '<div class="loading">😕 Новостей пока нет.</div>';
+                }
                 return;
             }
 
-            items.forEach((item, i) => {
-                // Совместимость со структурой Strapi v5
-                const attrs = item.attributes ? item.attributes : item;
+            // 3. ПОДКАТЕГОРИЯ УСЛУГ (Экскурсии)
+            if (serviceSlug && categoryId) {
+                grid.className = 'tours-grid';
 
-                // Безопасное получение картинки
-                const img = getImageUrl(attrs.MainImage || (attrs.gallery && attrs.gallery[0]));
+                const mainRes = await fetch(`${STRAPI_URL}/api/service-categories?filters[slug][$eq]=${serviceSlug}`);
+                const mainJson = await mainRes.json();
+                let mainCatName = "Каталог";
+                if (mainJson.data.length > 0) mainCatName = mainJson.data[0].name;
 
-                const isRec = attrs.IsRecommended ? `<div class="badge-recommended">ТУР•ТУР РЕКОМЕНДУЕТ</div>` : '';
-                const rating = attrs.Rating || 5.0;
+                const subRes = await fetch(`${STRAPI_URL}/api/categories?filters[id][$eq]=${categoryId}`);
+                let subCatName = "";
+                if (subRes.ok) {
+                    const subJson = await subRes.json();
+                    if (subJson.data.length > 0) subCatName = subJson.data[0].name;
+                }
+                titleEl.innerText = subCatName ? `${mainCatName} / ${subCatName}` : mainCatName;
 
-                // Ссылка ведет на страницу тура
-                const tourSlug = attrs.Slug || attrs.slug || 'no-slug';
-                const link = `tour.html?slug=${tourSlug}`;
+                let toursUrl = `${STRAPI_URL}/api/tours?filters[category][id][$eq]=${categoryId}&populate=*`;
+                let toursRes = await fetch(toursUrl);
+                let toursJson = null;
 
-                const categoryName = typeof attrs.category === 'string' ? attrs.category : (attrs.category?.data?.attributes?.name || 'Услуга');
-                const price = attrs.price ? Number(attrs.price).toLocaleString() : '0';
-                const currency = attrs.currency_symbol || '$';
+                if (!toursRes.ok || (await toursRes.clone().json()).data?.length === 0) {
+                    toursUrl = `${STRAPI_URL}/api/tours?filters[categories][id][$eq]=${categoryId}&populate=*`;
+                    toursRes = await fetch(toursUrl);
+                }
 
-                const card = `
-                    <div class="tour-card" onclick="window.location.href='${link}'" data-aos="fade-up" data-aos-delay="${i*50}">
-                        <div class="tour-image-wrapper">
-                            ${isRec}
-                            <div class="tour-rating"><i class="fas fa-star"></i> ${rating}</div>
-                            <img src="${img}" class="tour-image" alt="${attrs.title}" loading="lazy">
-                        </div>
-                        <div class="tour-content">
-                            <div class="tour-category">${categoryName}</div>
-                            <h3 class="tour-title">${attrs.title}</h3>
-                            <div class="tour-price">${currency}${price}</div>
-                        </div>
-                    </div>
-                `;
-                grid.innerHTML += card;
-            });
+                if (toursRes.ok) toursJson = await toursRes.json();
 
-            AOS.refresh();
+                if (toursJson && toursJson.data && toursJson.data.length > 0) {
+                    renderTours(toursJson.data, grid);
+                    return;
+                } else {
+                    grid.innerHTML = '<div class="loading">В этой категории пока нет предложений.</div>';
+                    return;
+                }
+            }
+
+            // 4. ГЛАВНОЕ НАПРАВЛЕНИЕ (Список подкатегорий)
+            if (serviceSlug && !categoryId && serviceSlug !== 'news') {
+                grid.className = 'categories-grid';
+
+                const mainRes = await fetch(`${STRAPI_URL}/api/service-categories?filters[slug][$eq]=${serviceSlug}`);
+                const mainJson = await mainRes.json();
+
+                if (mainJson.data && mainJson.data.length > 0) {
+                    const serviceCategory = mainJson.data[0];
+                    const serviceId = serviceCategory.id;
+                    titleEl.innerText = serviceCategory.name;
+
+                    const subCatsUrl = `${STRAPI_URL}/api/categories?filters[service_category][id][$eq]=${serviceId}&populate=*`;
+                    const subCatsRes = await fetch(subCatsUrl);
+
+                    if (subCatsRes.ok) {
+                        const subCatsJson = await subCatsRes.json();
+                        if (subCatsJson.data && subCatsJson.data.length > 0) {
+                            renderSubCategories(subCatsJson.data, grid, serviceSlug);
+                            return;
+                        }
+                    }
+
+                    const toursUrl = `${STRAPI_URL}/api/tours?filters[service_category][id][$eq]=${serviceId}&populate=*`;
+                    const toursRes = await fetch(toursUrl);
+                    if (toursRes.ok) {
+                        const toursJson = await toursRes.json();
+                        if (toursJson.data && toursJson.data.length > 0) {
+                            grid.className = 'tours-grid';
+                            renderTours(toursJson.data, grid);
+                            return;
+                        }
+                    }
+
+                    grid.innerHTML = '<div class="loading">В этом разделе пока нет предложений.</div>';
+                    return;
+                }
+            }
+
+            // 5. ТЕГИ
+            if (tagId) {
+                grid.className = 'tours-grid';
+                titleEl.innerText = 'Популярные экскурсии';
+                const res = await fetch(`${STRAPI_URL}/api/tours?filters[tags][id][$eq]=${tagId}&populate=*`);
+                const json = await res.json();
+                renderTours(json.data || [], grid);
+                return;
+            }
+
+            // 6. ВСЕ ЭКСКУРСИИ (По умолчанию)
+            grid.className = 'tours-grid';
+            titleEl.innerText = 'Все экскурсии';
+            const res = await fetch(`${STRAPI_URL}/api/tours?populate=*`);
+            const json = await res.json();
+            renderTours(json.data || [], grid);
 
         } catch (e) {
-            console.error(e);
-            document.getElementById('catalogGrid').innerHTML = `<div class="error-msg">Ошибка загрузки данных: ${e.message}</div>`;
+            console.error('❌ Критическая ошибка:', e);
+            grid.innerHTML = `<div class="error-msg">Ошибка: ${e.message}</div>`;
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        AOS.init();
+        AOS.init({ duration: 600, once: true });
         loadCatalog();
     });
 </script>

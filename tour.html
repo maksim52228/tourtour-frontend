@@ -3,58 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Детали тура | ТурТур Пхукет</title>
+    <title>Детали экскурсии | ТурТур Пхукет</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Яндекс.Карты -->
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+
     <style>
-        :root { --primary: #ff9900; --dark: #2c3e50; }
-        body { font-family: 'Open Sans', sans-serif; margin: 0; padding-top: 80px; background: #f9f9f9; }
-        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--dark); }
+        :root { --primary: #ff9900; --dark: #2c3e50; --light: #f9f9f9; }
+        body { font-family: 'Open Sans', sans-serif; margin: 0; padding-top: 80px; background: var(--light); color: #333; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--dark); margin-top: 0; }
+
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; background: white; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
 
-        header { background: white; padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid #eee; }
+        header { background: white; padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .nav-inner { display: flex; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 20px; align-items: center; }
-        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 20px; }
-        .back-btn { text-decoration: none; color: #555; font-weight: 600; cursor: pointer; }
-        .back-btn:hover { color: var(--primary); }
+        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .back-btn { text-decoration: none; color: #555; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .back-btn:hover { color: var(--primary); transform: translateX(-5px); }
 
-        .hero-img { width: 100%; height: 400px; object-fit: cover; border-radius: 15px; margin-bottom: 30px; background: #eee; }
-        .tour-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 30px; gap: 20px; }
-        .tour-title { font-size: 32px; margin: 0; line-height: 1.2; }
-        .tour-price { font-size: 28px; color: var(--primary); font-weight: 800; white-space: nowrap; }
+        .hero-img { width: 100%; height: 400px; object-fit: cover; border-radius: 15px; margin-bottom: 30px; background: #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        .tour-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 30px; gap: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .tour-title { font-size: 32px; margin: 0; line-height: 1.2; color: var(--dark); }
+        .tour-price { font-size: 28px; color: var(--primary); font-weight: 800; white-space: nowrap; background: #fff5e6; padding: 10px 20px; border-radius: 10px; }
 
         .content-block { margin-bottom: 30px; line-height: 1.8; color: #444; font-size: 16px; }
-        .content-block h3 { margin-top: 25px; margin-bottom: 15px; font-size: 20px; }
+        .content-block h3 { margin-top: 25px; margin-bottom: 15px; font-size: 20px; border-left: 4px solid var(--primary); padding-left: 15px; }
+        .content-block ul { padding-left: 20px; }
+        .content-block li { margin-bottom: 8px; }
 
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
         .gallery-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: 0.3s; background: #eee; }
-        .gallery-img:hover { transform: scale(1.02); }
+        .gallery-img:hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         .btn-book {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 18px;
-            margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-            text-align: center;
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--primary); color: white;
+            padding: 15px 40px; border-radius: 50px;
+            text-decoration: none; font-weight: 700; font-size: 18px;
+            margin-top: 20px; box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
+            transition: 0.3s; border: none; cursor: pointer; text-align: center;
         }
-        .btn-book:hover { background: #e68a00; transform: translateY(-2px); }
+        .btn-book:hover { background: #e68a00; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 153, 0, 0.6); }
+
+        /* Стили для карты */
+        .map-section { margin: 40px 0; }
+        #tourMap {
+            height: 400px;
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            z-index: 1;
+            background: #eee;
+        }
+        .map-container { position: relative; }
+        .map-placeholder {
+            height: 400px;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 18px;
+            border: 2px dashed var(--primary);
+            flex-direction: column;
+            gap: 15px;
+        }
+        .map-placeholder i { font-size: 48px; color: var(--primary); }
 
         .loading { text-align: center; padding: 50px; font-size: 20px; color: #777; }
-        .error-msg { text-align: center; padding: 50px; color: red; }
+        .error-msg { text-align: center; padding: 50px; color: #d9534f; background: #fdf0f0; border-radius: 10px; }
+        .error-msg a { color: var(--primary); font-weight: bold; }
 
         @media (max-width: 768px) {
             .hero-img { height: 250px; }
             .tour-title { font-size: 24px; }
-            .tour-price { font-size: 22px; }
+            .tour-price { font-size: 22px; width: 100%; text-align: center; }
+            .tour-header { flex-direction: column; }
+            .content-block { grid-template-columns: 1fr !important; }
+            #tourMap { height: 300px; }
         }
     </style>
 </head>
@@ -62,176 +94,294 @@
 
 <header>
     <div class="nav-inner">
-        <a href="index.html" class="logo">ТУРТУР ПХУКЕТ</a>
+        <a href="index.html" class="logo"><i class="fas fa-umbrella-beach"></i> ТурТур Пхукет</a>
         <span class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Назад</span>
     </div>
 </header>
 
 <div class="container" id="tourContainer">
-    <div class="loading">Загрузка информации о туре...</div>
+    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка информации об экскурсии...</div>
 </div>
 
 <script>
     const STRAPI_URL = 'http://5.8.76.244:1337';
+    let currentTourData = null;
+    let mapInstance = null;
 
-    // Улучшенная функция получения картинки с защитой от ошибок
     function getImageUrl(image) {
-        // Если изображения нет вообще
-        if (!image) return 'https://placehold.co/800x600?text=Нет+фото';
-
+        if (!image) return null;
         let url = null;
+        if (image.url) url = image.url;
+        else if (image.data && image.data.url) url = image.data.url;
+        else if (image.formats) url = image.formats.large?.url || image.formats.medium?.url || image.formats.small?.url || image.url;
 
-        // Пробуем разные варианты структуры объекта image (Strapi v4/v5)
-        if (typeof image === 'string') {
-            url = image;
-        } else if (image.url) {
-            url = image.url;
-        } else if (image.data && image.data.attributes && image.data.attributes.url) {
-            url = image.data.attributes.url;
-        } else if (image.formats) {
-            // Берем большое фото, если есть, иначе среднее
-            url = image.formats.large?.url || image.formats.medium?.url || image.formats.small?.url || image.url;
-        }
-
-        // Если URL относительный, добавляем адрес сервера
-        if (url && url.startsWith('/')) {
-            return STRAPI_URL + url;
-        }
-
-        return url || 'https://placehold.co/800x600?text=Нет+фото';
+        if (!url) return null;
+        return url.startsWith('/') ? STRAPI_URL + url : url;
     }
 
-    async function loadTour() {
+    function getTextContent(field) {
+        if (!field) return '';
+        if (typeof field === 'string') return field;
+        if (Array.isArray(field)) {
+            return field.map(block => {
+                if (block.type === 'paragraph' || block.type === 'heading') {
+                    return block.children ? block.children.map(c => c.text || '').join('') : '';
+                }
+                return '';
+            }).join('<br>');
+        }
+        return String(field);
+    }
+
+    // Геокодирование через Nominatim
+    async function geocodeLocation(locationName) {
+        if (!locationName || locationName.trim() === '') return null;
+
+        const query = `${locationName}, Phuket, Thailand`;
+        console.log(`Поиск координат для: ${query}`);
+
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+
+            if (!response.ok) throw new Error('Ошибка сети');
+
+            const data = await response.json();
+
+            if (data && data.length > 0) {
+                const result = data[0];
+                console.log(`Найдено: ${result.display_name} (${result.lat}, ${result.lon})`);
+                return {
+                    lat: parseFloat(result.lat),
+                    lng: parseFloat(result.lon),
+                    address: result.display_name
+                };
+            } else {
+                console.warn('Место не найдено в OSM');
+                return null;
+            }
+        } catch (e) {
+            console.error('Ошибка геокодирования:', e);
+            return null;
+        }
+    }
+
+    // Инициализация карты
+    function initYandexMap(locationName, title, coords) {
+        const mapContainer = document.getElementById('tourMap');
+        if (!mapContainer) return;
+
+        if (mapInstance) {
+            mapInstance.destroy();
+        }
+
+        ymaps.ready(function() {
+            mapInstance = new ymaps.Map('tourMap', {
+                center: [coords.lat, coords.lng],
+                zoom: 14,
+                controls: ['zoomControl', 'fullscreenControl']
+            });
+
+            mapInstance.controls.remove('searchControl');
+            mapInstance.controls.remove('trafficControl');
+            mapInstance.controls.remove('typeSelector');
+
+            const placemark = new ymaps.Placemark([coords.lat, coords.lng], {
+                balloonContentHeader: `<strong style="font-size:16px;">${title}</strong>`,
+                balloonContentBody: `<div style="font-size:13px; line-height:1.4;">📍 ${locationName}<br><small>${coords.address}</small></div>`,
+                hintContent: title
+            }, {
+                preset: 'islands#blueDotIcon',
+                iconColor: '#007bff'
+            });
+
+            mapInstance.geoObjects.add(placemark);
+
+            if(currentTourData) {
+                currentTourData.lat = coords.lat;
+                currentTourData.lng = coords.lng;
+                currentTourData.address = coords.address;
+                updateMapData();
+            }
+
+            setTimeout(() => {
+                mapInstance.container.fitToViewport();
+            }, 100);
+        });
+    }
+
+    async function initTourMap(locationName, title) {
+        const mapContainer = document.getElementById('tourMap');
+        if (!mapContainer) return;
+
+        if (!locationName || locationName.trim() === '') {
+            mapContainer.innerHTML = '<div class="map-placeholder"><i class="fas fa-map-marked-alt"></i><span>Место проведения экскурсии не указано</span></div>';
+            return;
+        }
+
+        mapContainer.innerHTML = '<div class="map-placeholder"><i class="fas fa-spinner fa-spin"></i><span>Ищем место на карте...</span></div>';
+
+        const coords = await geocodeLocation(locationName);
+
+        if (!coords) {
+            mapContainer.innerHTML = `<div class="map-placeholder">
+                <i class="fas fa-map-pin"></i>
+                <span>Не удалось найти "${locationName}" на карте</span>
+                <small style="color: #999;">Проверьте название места в админке</small>
+            </div>`;
+            return;
+        }
+
+        mapContainer.innerHTML = '';
+
+        setTimeout(() => {
+            initYandexMap(locationName, title, coords);
+        }, 50);
+    }
+
+    function updateMapData() {
+        if (!currentTourData) return;
+        const allToursData = JSON.parse(localStorage.getItem('allToursMapData') || '[]');
+        const existingIndex = allToursData.findIndex(t => t.id === currentTourData.id);
+
+        const tourData = {
+            id: currentTourData.id,
+            title: currentTourData.title,
+            lat: currentTourData.lat,
+            lng: currentTourData.lng,
+            slug: currentTourData.slug,
+            price: `${currentTourData.currency || '$'}${currentTourData.price || '0'}`,
+            mainImage: currentTourData.mainImage,
+            locationName: currentTourData.locationName
+        };
+
+        if (existingIndex >= 0) {
+            allToursData[existingIndex] = tourData;
+        } else if (currentTourData.lat && currentTourData.lng) {
+            allToursData.push(tourData);
+        }
+
+        localStorage.setItem('allToursMapData', JSON.stringify(allToursData));
+        if (window.opener) {
+            window.opener.postMessage({ type: 'UPDATE_MAP_DATA', tour: tourData }, '*');
+        }
+    }
+
+    // Загрузка данных экскурсии
+    async function loadTourDetails() {
         const params = new URLSearchParams(window.location.search);
         const slug = params.get('slug');
 
         if (!slug) {
-            document.getElementById('tourContainer').innerHTML = '<div class="error-msg">Не указан тур (нет параметра slug)</div>';
+            document.getElementById('tourContainer').innerHTML = '<div class="error-msg">❌ Не указана экскурсия<br><a href="index.html">На главную</a></div>';
             return;
         }
 
         try {
-            // Запрашиваем тур по Slug (учитываем регистр, обычно Slug с большой буквы в моделях)
-            // Пробуем оба варианта написания фильтра, если один не сработает
-            let response = await fetch(`${STRAPI_URL}/api/tours?filters[Slug][$eq]=${slug}&populate=*`);
+            const apiUrl = `/api/tours?filters[slug][$eq]=${slug}&populate=*`;
+            const response = await fetch(`${STRAPI_URL}${apiUrl}`);
 
-            // Если ничего не нашлось, пробуем строчный вариант (на случай разных версий Strapi)
-            if (!response.ok) {
-                 response = await fetch(`${STRAPI_URL}/api/tours?filters[slug][$eq]=${slug}&populate=*`);
-            }
+            if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
 
             const json = await response.json();
-
             if (!json.data || json.data.length === 0) {
-                document.getElementById('tourContainer').innerHTML = `<div class="error-msg">Тур с адресом "${slug}" не найден.<br><a href="index.html" style="color:var(--primary); text-decoration:underline;">Вернуться на главную</a></div>`;
+                document.getElementById('tourContainer').innerHTML = `<div class="error-msg">😕 Экскурсия не найдена<br><a href="index.html">На главную</a></div>`;
                 return;
             }
 
             const tour = json.data[0];
-            // Совместимость со структурой Strapi v5 (где атрибуты могут быть прямо в объекте или в attributes)
-            const attrs = tour.attributes ? tour.attributes : tour;
+            currentTourData = {
+                id: tour.id,
+                title: tour.title || 'Без названия',
+                slug: tour.slug,
+                price: tour.price,
+                currency: tour.currency || '$',
+                mainImage: null,
+                locationName: tour.location || tour.place || ''
+            };
 
-            const mainImg = getImageUrl(attrs.MainImage);
+            const mainImgObj = tour.main_image || tour.mainImage;
+            const galleryObj = tour.images || tour.gallery;
+            const title = tour.title || 'Без названия';
+            const price = tour.price ? Number(tour.price).toLocaleString() : '0';
+            const currency = tour.currency || '$';
+            const locationName = tour.location || tour.place || '';
 
-            // Обработка Rich Text описания
-            let descHtml = '';
-            if (Array.isArray(attrs.description)) {
-                descHtml = attrs.description.map(block => {
-                    if (block.type === 'paragraph') return `<p>${block.children.map(c => c.text).join('')}</p>`;
-                    if (block.type === 'heading') return `<h3>${block.children.map(c => c.text).join('')}</h3>`;
-                    return '';
-                }).join('');
-            } else if (attrs.description) {
-                descHtml = `<p>${attrs.description}</p>`;
-            } else {
-                descHtml = `<p>${attrs.short_description || 'Описание отсутствует.'}</p>`;
+            let mainImgUrl = getImageUrl(mainImgObj);
+            if (!mainImgUrl && galleryObj && Array.isArray(galleryObj) && galleryObj.length > 0) {
+                mainImgUrl = getImageUrl(galleryObj[0]);
             }
+            if (!mainImgUrl) mainImgUrl = 'https://placehold.co/800x600?text=Нет+фото';
+            currentTourData.mainImage = mainImgUrl;
 
-            // Галерея
+            const description = getTextContent(tour.description || tour.short_description);
+
             let galleryHtml = '';
-            if (attrs.gallery && Array.isArray(attrs.gallery) && attrs.gallery.length > 0) {
-                galleryHtml = '<h3>Галерея</h3><div class="gallery-grid">' +
-                    attrs.gallery.map(img => `<img src="${getImageUrl(img)}" class="gallery-img" onclick="window.open(this.src)">`).join('') +
-                    '</div>';
+            if (galleryObj && Array.isArray(galleryObj) && galleryObj.length > 0) {
+                galleryHtml = `<h3>📸 Галерея</h3><div class="gallery-grid">` +
+                    galleryObj.map(img => {
+                        const imgUrl = getImageUrl(img);
+                        return imgUrl ? `<img src="${imgUrl}" class="gallery-img" onclick="window.open(this.src)" alt="Фото">` : '';
+                    }).join('') + `</div>`;
             }
 
-            // Кнопка бронирования (WhatsApp)
-            const phone = '66951905999';
-            const tgUsername = 'tourtour_admin';
-            const tgMessage = `Здравствуйте! Хочу узнать подробности и забронировать тур: ${attrs.title}`;
-            // Ссылка формирует сообщение при клике (работает в новых версиях TG)
+            const renderList = (items, icon) => {
+                if (!items) return '<p>Информация уточняется</p>';
+                let listItems = [];
+                if (Array.isArray(items)) {
+                    items.forEach(item => {
+                        if (typeof item === 'string') listItems.push(item);
+                        else if (item.children) listItems.push(item.children.map(c => c.text).join(''));
+                        else if (item.text) listItems.push(item.text);
+                    });
+                }
+                if (listItems.length === 0) return '<p>Информация уточняется</p>';
+                return '<ul>' + listItems.map(i => `<li>${icon} ${i}</li>`).join('') + '</ul>';
+            };
+
+            const tgUsername = 'Slabodukov';
+            const tgMessage = `Здравствуйте! Хочу забронировать экскурсию: ${title} (${currency}${price})`;
             const tgLink = `https://t.me/${tgUsername}?text=${encodeURIComponent(tgMessage)}`;
 
-            // Обработка списков "Включено/Не включено" (если это JSON массив)
-            let includedHtml = '';
-            if (attrs.included) {
-                let items = [];
-                if (Array.isArray(attrs.included)) {
-                    items = attrs.included;
-                } else if (typeof attrs.included === 'string') {
-                     try { items = JSON.parse(attrs.included); } catch(e) { items = [attrs.included]; }
-                }
-                if (items.length > 0) {
-                    includedHtml = '<ul>' + items.map(i => `<li>✅ ${i}</li>`).join('') + '</ul>';
-                }
-            }
-
-            let notIncludedHtml = '';
-            if (attrs.notIncluded) {
-                let items = [];
-                if (Array.isArray(attrs.notIncluded)) {
-                    items = attrs.notIncluded;
-                } else if (typeof attrs.notIncluded === 'string') {
-                     try { items = JSON.parse(attrs.notIncluded); } catch(e) { items = [attrs.notIncluded]; }
-                }
-                if (items.length > 0) {
-                    notIncludedHtml = '<ul>' + items.map(i => `<li>❌ ${i}</li>`).join('') + '</ul>';
-                }
-            }
-
             const html = `
-                <img src="${mainImg}" class="hero-img" alt="${attrs.title || 'Тур'}">
-
+                <img src="${mainImgUrl}" class="hero-img" alt="${title}">
                 <div class="tour-header">
-                    <h1 class="tour-title">${attrs.title || 'Без названия'}</h1>
-                    <div class="tour-price">${attrs.currency_symbol || '$'}${attrs.price ? Number(attrs.price).toLocaleString() : '0'}</div>
+                    <h1 class="tour-title">${title}</h1>
+                    <div class="tour-price">${currency}${price}</div>
                 </div>
-
                 <div class="content-block">
-                    ${descHtml}
+                    <h3>📝 Описание</h3>
+                    <div>${description}</div>
                 </div>
-
                 ${galleryHtml}
-
+                <div class="map-section">
+                    <h3>📍 Место проведения: ${locationName || 'не указано'}</h3>
+                    <div class="map-container">
+                        <div id="tourMap" style="height: 400px;"></div>
+                    </div>
+                </div>
                 <div style="text-align: center; margin: 40px 0;">
                     <a href="${tgLink}" target="_blank" class="btn-book">
                         <i class="fab fa-telegram-plane"></i> Забронировать в Telegram
                     </a>
                 </div>
-
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;" class="content-block">
-                    <div>
-                        <h3>✅ Включено в стоимость:</h3>
-                        ${includedHtml || '<p>Информация уточняется</p>'}
-                    </div>
-                    <div>
-                        <h3>❌ Не включено:</h3>
-                        ${notIncludedHtml || '<p>Все включено или информация уточняется</p>'}
-                    </div>
+                    <div><h3>✅ Включено:</h3>${renderList(tour.included, '✅')}</div>
+                    <div><h3>❌ Не включено:</h3>${renderList(tour.not_included || tour.notIncluded, '❌')}</div>
                 </div>
             `;
 
             document.getElementById('tourContainer').innerHTML = html;
-            document.title = `${attrs.title || 'Тур'} | ТурТур Пхукет`;
+            document.title = `${title} | Экскурсия на Пхукете | ТурТур Пхукет`;
+
+            initTourMap(locationName, title);
 
         } catch (e) {
-            console.error('Ошибка загрузки тура:', e);
-            document.getElementById('tourContainer').innerHTML = `<div class="error-msg">Ошибка загрузки данных: ${e.message}<br>Проверьте консоль (F12) для деталей.</div>`;
+            console.error(e);
+            document.getElementById('tourContainer').innerHTML = `<div class="error-msg">⚠️ Ошибка: ${e.message}</div>`;
         }
     }
 
-    // Запускаем загрузку при открытии страницы
-    loadTour();
+    loadTourDetails();
 </script>
 </body>
 </html>
