@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Организуем незабываемые авторские туры в самые живописные места планеты. Найдите свое идеальное путешествие с нами!">
+    <meta name="yandex-verification" content="91ad10a992623ab4" />
+    <meta name="google-site-verification" content="SNd1UnXCwTgMHBf5RxEboMbXaHeAaYZSIkaL8tJeutw" />
+
     <title>Эмоции Жизни</title>
 
     <!-- Шрифты -->
@@ -10,8 +14,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
+
+
     <!-- Иконки -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Анимации AOS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -32,6 +39,8 @@
             --shadow-sm: 0 15px 35px -10px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
             --transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --border-radius-card: 20px;
+            --border-radius-image: 16px;
         }
 
         * {
@@ -52,7 +61,6 @@
             line-height: 1.7;
             font-weight: 300;
             position: relative;
-            cursor: auto;
         }
 
         body::before {
@@ -297,6 +305,8 @@
             height: 100%;
             object-fit: cover;
             z-index: 0;
+            will-change: transform;
+            transition: transform 0.1s ease-out;
         }
         .hero-overlay {
             position: absolute;
@@ -401,13 +411,15 @@
         .tag-card {
             position: relative;
             height: 500px;
-            border-radius: 4px;
+            border-radius: var(--border-radius-card);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             transition: transform 0.3s, box-shadow 0.3s;
             transform-style: preserve-3d;
             perspective: 1000px;
             cursor: pointer;
+            /* Фиксим конфликт с AOS */
+            will-change: transform;
         }
 
         .tag-card:hover { box-shadow: var(--shadow-lg); }
@@ -423,6 +435,8 @@
             padding: 40px 30px;
             color: white;
             transform: translateZ(20px);
+            border-bottom-left-radius: var(--border-radius-card);
+            border-bottom-right-radius: var(--border-radius-card);
         }
 
         .tag-badge {
@@ -439,7 +453,7 @@
 
         .service-card {
             background: var(--bg);
-            border-radius: 4px;
+            border-radius: var(--border-radius-card);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             transition: transform 0.3s, box-shadow 0.3s;
@@ -448,10 +462,12 @@
             transform-style: preserve-3d;
             perspective: 1000px;
             cursor: pointer;
+            /* Фиксим конфликт с AOS */
+            will-change: transform;
         }
 
         .service-card:hover { box-shadow: var(--shadow-lg); }
-        .service-bg { transition: transform 0.8s; }
+        .service-bg { transition: transform 0.8s; width: 100%; height: 100%; object-fit: cover; }
         .service-card:hover .service-bg { transform: scale(1.05); }
 
         .service-content {
@@ -463,6 +479,8 @@
             padding: 30px;
             color: white;
             transform: translateZ(20px);
+            border-bottom-left-radius: var(--border-radius-card);
+            border-bottom-right-radius: var(--border-radius-card);
         }
 
         .service-title {
@@ -508,18 +526,32 @@
 
         .news-card {
             background: white;
-            border-radius: 4px;
+            border-radius: var(--border-radius-card);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             transition: transform 0.3s, box-shadow 0.3s;
             transform-style: preserve-3d;
             perspective: 1000px;
             cursor: pointer;
+            /* Фиксим конфликт с AOS */
+            will-change: transform;
         }
 
         .news-card:hover { box-shadow: var(--shadow-lg); }
-        .news-img-wrapper { height: 250px; overflow: hidden; position: relative; }
-        .news-img { transition: transform 0.8s; }
+        .news-img-wrapper {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+            border-top-left-radius: var(--border-radius-card);
+            border-top-right-radius: var(--border-radius-card);
+        }
+        .news-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s;
+            display: block;
+        }
         .news-card:hover .news-img { transform: scale(1.05); }
 
         .hot-badge {
@@ -533,9 +565,17 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             transform: translateZ(30px);
+            border-radius: 30px;
+            z-index: 2;
         }
 
-        .news-content { padding: 35px; transform: translateZ(20px); }
+        .news-content {
+            padding: 35px;
+            transform: translateZ(20px);
+            background: white;
+            border-bottom-left-radius: var(--border-radius-card);
+            border-bottom-right-radius: var(--border-radius-card);
+        }
         .news-date { font-size: 11px; color: #aaa; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
         .news-title { font-size: 22px; margin-bottom: 15px; line-height: 1.3; font-family: 'Cormorant Garamond', serif; font-weight: 500; }
         .news-excerpt { font-size: 15px; color: var(--text-light); font-weight: 300; line-height: 1.7; }
@@ -550,6 +590,7 @@
 
         .loading { text-align: center; padding: 50px; color: #999; }
 
+        /* Класс для отключения эффекта наклона на мобильных устройствах */
         @media (max-width: 768px) {
             .nav-menu { display: none; }
             .header-actions .phone-link { display: none; }
@@ -570,6 +611,48 @@
             #logoContainer {
                 gap: 8px;
             }
+
+            /* Отключаем эффект наклона на мобильных */
+            .tag-card, .service-card, .news-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+            }
+
+            .tag-card:hover, .service-card:hover, .news-card:hover {
+                transform: translateY(-5px) !important;
+            }
+        }
+
+        /* Добавляем класс для карточек, которые уже анимированы AOS */
+        .aos-animate.tag-card,
+        .aos-animate.service-card,
+        .aos-animate.news-card {
+            /* Базовые стили для анимированных карточек */
+        }
+        /* Стили для управления трансформациями */
+        .tag-card, .service-card, .news-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+
+        /* Состояние без эффекта наклона */
+        .tag-card:not(.tilt-active),
+        .service-card:not(.tilt-active),
+        .news-card:not(.tilt-active) {
+            transform: none !important;
+        }
+
+        /* Для AOS анимаций */
+        [data-aos].tag-card,
+        [data-aos].service-card,
+        [data-aos].news-card {
+            transition-property: transform, opacity, box-shadow !important;
+        }
+
+        /* Защита от конфликтов */
+        .aos-animate.tag-card:not(.tilt-active),
+        .aos-animate.service-card:not(.tilt-active),
+        .aos-animate.news-card:not(.tilt-active) {
+            transform: none !important;
         }
     </style>
 </head>
@@ -580,7 +663,6 @@
         <div class="header-inner">
             <a href="#heroSection" class="logo" id="logoLink">
                 <div id="logoContainer">
-                    <!-- Это будет заменяться через JS -->
                     <div class="default-logo-icon" id="defaultLogo">
                         <i class="far fa-compass"></i>
                     </div>
@@ -734,7 +816,6 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Инициализация анимаций
         AOS.init({
             duration: 1000,
             once: false,
@@ -743,12 +824,10 @@
             offset: 100
         });
 
-        const STRAPI_URL = '';
+        const STRAPI_URL = 'http://5.8.76.244:1337';
 
-        // Глобальные переменные для хранения данных из админки
         let siteSettings = {};
 
-        // Вспомогательные функции для медиа
         function getMediaUrl(media) {
             if (!media) return null;
             if (typeof media === 'string') return media;
@@ -774,7 +853,6 @@
             return url;
         }
 
-        // Загрузка настроек сайта из админки
         async function loadSiteSettings() {
             try {
                 const res = await fetch(`${STRAPI_URL}/api/site-setting?populate=*`);
@@ -789,7 +867,6 @@
                 if (json.data) {
                     siteSettings = json.data;
 
-                    // Обновляем логотип
                     const logoContainer = document.getElementById('logoContainer');
                     const companyNameSpan = document.getElementById('companyName');
 
@@ -812,7 +889,6 @@
                         }
                     }
 
-                    // Обновляем название компании в футере
                     const footerCompanyName = document.getElementById('footerCompanyName');
                     const copyrightElement = document.getElementById('copyright');
 
@@ -821,7 +897,6 @@
                         if (copyrightElement) copyrightElement.innerHTML = `&copy; ${new Date().getFullYear()} ${siteSettings.companyName}`;
                     }
 
-                    // Обновляем телефон
                     const phoneNumberElement = document.getElementById('phoneNumber');
                     const footerPhone = document.getElementById('footerPhone');
                     const phoneLink = document.getElementById('phoneLink');
@@ -832,7 +907,6 @@
                         if (phoneLink) phoneLink.href = `tel:${siteSettings.phone.replace(/\s+/g, '')}`;
                     }
 
-                    // Обновляем Telegram
                     const telegramLink = document.getElementById('telegramLink');
                     const footerTelegram = document.getElementById('footerTelegram');
 
@@ -848,7 +922,6 @@
                         }
                     }
 
-                    // Обновляем hero текст
                     if (siteSettings.heroTitle) {
                         const heroTitle = document.getElementById('heroTitle');
                         if (heroTitle) heroTitle.innerHTML = siteSettings.heroTitle.replace(/\n/g, '<br>');
@@ -859,7 +932,6 @@
                         if (heroSubtitle) heroSubtitle.textContent = siteSettings.heroSubtitle;
                     }
 
-                    // Обновляем цитату
                     if (siteSettings.inspirationQuote) {
                         const inspirationQuote = document.getElementById('inspirationQuote');
                         if (inspirationQuote) {
@@ -867,7 +939,6 @@
                         }
                     }
 
-                    // Обновляем описание в футере
                     if (siteSettings.footerDescription) {
                         const footerDescription = document.getElementById('footerDescription');
                         if (footerDescription) footerDescription.textContent = siteSettings.footerDescription;
@@ -878,7 +949,6 @@
             }
         }
 
-        // Загрузка видео героя
         async function loadHeroVideo() {
             try {
                 const videoElement = document.getElementById('heroVideo');
@@ -904,7 +974,6 @@
             }
         }
 
-        // Логика хедера
         const header = document.getElementById('siteHeader');
         function updateHeaderMode() {
             if (window.scrollY > 50) {
@@ -918,12 +987,35 @@
         window.addEventListener('scroll', () => requestAnimationFrame(updateHeaderMode));
         updateHeaderMode();
 
-        // Эффект наклона карточек
+        function initVideoParallax() {
+            const video = document.getElementById('heroVideo');
+            if (!video) return;
+
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const maxTranslate = 150;
+                const translateY = Math.min(scrollY * 0.3, maxTranslate);
+                video.style.transform = `translateY(${translateY}px)`;
+            });
+        }
+
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ TILT EFFECT
         function initTiltEffect() {
             const cards = document.querySelectorAll('.tag-card, .service-card, .news-card');
 
+            // Флаг для определения мобильного устройства
+            const isMobile = window.innerWidth <= 768;
+
             cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
+                // Удаляем старые обработчики, если они были
+                card.removeEventListener('mousemove', handleMouseMove);
+                card.removeEventListener('mouseleave', handleMouseLeave);
+
+                // Сохраняем ссылки на обработчики
+                card.handleMouseMove = function(e) {
+                    // Не применяем эффект на мобильных устройствах
+                    if (isMobile) return;
+
                     const rect = card.getBoundingClientRect();
 
                     const x = e.clientX - rect.left;
@@ -932,7 +1024,7 @@
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
 
-                    const maxAngle = 3;
+                    const maxAngle = 2;
 
                     const percentX = (x - centerX) / centerX;
                     const percentY = (y - centerY) / centerY;
@@ -940,18 +1032,65 @@
                     const rotateY = percentX * maxAngle;
                     const rotateX = -percentY * maxAngle;
 
+                    // Применяем только эффект наклона, сохраняя базовую трансформацию AOS
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(2px)`;
                     card.style.transition = 'transform 0.1s ease';
-                });
 
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+                    // Добавляем класс, чтобы отметить, что эффект активен
+                    card.classList.add('tilt-active');
+                };
+
+                card.handleMouseLeave = function() {
+                    if (isMobile) return;
+
+                    // Убираем только эффект наклона
+                    card.style.transform = '';
                     card.style.transition = 'transform 0.3s ease';
-                });
+
+                    // Убираем класс эффекта
+                    card.classList.remove('tilt-active');
+
+                    // Принудительно перезапускаем AOS анимацию при следующем появлении
+                    setTimeout(() => {
+                        if (!card.classList.contains('aos-animate')) {
+                            card.style.transform = '';
+                        }
+                    }, 50);
+                };
+
+                // Добавляем обработчики
+                card.addEventListener('mousemove', card.handleMouseMove);
+                card.addEventListener('mouseleave', card.handleMouseLeave);
+
+                // Очищаем transform при уходе с страницы или при скролле
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (!entry.isIntersecting) {
+                            // Когда карточка уходит из viewport, сбрасываем transform
+                            card.style.transform = '';
+                            card.classList.remove('tilt-active');
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                observer.observe(card);
             });
         }
 
-        // === Функции для карты ===
+        // Также добавим обработчик скролла для сброса трансформаций
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            // Сбрасываем трансформации при скролле, чтобы не мешать AOS
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const activeCards = document.querySelectorAll('.tilt-active');
+                activeCards.forEach(card => {
+                    card.style.transform = '';
+                    card.classList.remove('tilt-active');
+                });
+            }, 100);
+        }, { passive: true });
+
         async function initPhuketMap() {
             const mapContainer = document.getElementById('phuketMap');
             if (!mapContainer) return;
@@ -1051,7 +1190,6 @@
             });
         }
 
-        // Загрузка популярных маршрутов (тегов)
         async function loadPopularRoutes() {
             const container = document.getElementById('globalTagsContainer');
             try {
@@ -1080,14 +1218,18 @@
                             </div>
                         </div>`;
                 }).join('');
-                initTiltEffect();
+
+                // Вызываем tilt эффект после загрузки карточек
+                setTimeout(() => {
+                    initTiltEffect();
+                }, 100);
+
             } catch (e) {
                 console.error('Ошибка загрузки тегов:', e);
                 container.innerHTML = '<div class="loading">ошибка загрузки</div>';
             }
         }
 
-        // Загрузка категорий услуг (направлений)
         async function loadServiceDirections() {
             const nav = document.getElementById('mainNav');
             const grid = document.getElementById('servicesGrid');
@@ -1129,14 +1271,18 @@
                 }
 
                 grid.innerHTML = gridHtml;
-                initTiltEffect();
+
+                // Вызываем tilt эффект после загрузки карточек
+                setTimeout(() => {
+                    initTiltEffect();
+                }, 100);
+
             } catch (e) {
                 console.error('Ошибка загрузки направлений:', e);
                 grid.innerHTML = '<div class="loading">ошибка загрузки</div>';
             }
         }
 
-        // Загрузка новостей
         async function loadNews() {
             const container = document.getElementById('newsContainer');
             try {
@@ -1162,22 +1308,51 @@
                             </div>
                         </div>`;
                 }).join('');
-                initTiltEffect();
+
+                // Вызываем tilt эффект после загрузки карточек
+                setTimeout(() => {
+                    initTiltEffect();
+                }, 100);
+
             } catch (e) {
                 console.error('Ошибка загрузки новостей:', e);
                 container.innerHTML = '<div class="loading">ошибка загрузки</div>';
             }
         }
 
-        // Старт при загрузке страницы
+        // Функция для обновления AOS и tilt эффекта при изменении размера окна
+        function handleResize() {
+            AOS.refresh();
+
+            // Переинициализируем tilt эффект для мобильных устройств
+            const isMobile = window.innerWidth <= 768;
+            const cards = document.querySelectorAll('.tag-card, .service-card, .news-card');
+
+            cards.forEach(card => {
+                if (isMobile) {
+                    card.style.transform = '';
+                }
+            });
+        }
+
+        window.addEventListener('resize', handleResize);
+
         document.addEventListener('DOMContentLoaded', () => {
             loadSiteSettings().then(() => {
                 loadHeroVideo();
-                loadPopularRoutes();     // переименовано с loadGlobalTags
-                loadServiceDirections(); // переименовано с loadServiceCategories
+                loadPopularRoutes();
+                loadServiceDirections();
                 loadNews();
                 initPhuketMap();
-                setTimeout(() => AOS.refresh(), 500);
+                initVideoParallax();
+
+                // Обновляем AOS после загрузки всего контента
+                setTimeout(() => {
+                    AOS.refresh();
+
+                    // Запускаем tilt эффект после того как AOS применил анимации
+                    initTiltEffect();
+                }, 500);
             });
         });
     </script>
