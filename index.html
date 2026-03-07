@@ -414,7 +414,6 @@
             border-radius: var(--border-radius-card);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
-            transition: transform 0.3s, box-shadow 0.3s;
             transform-style: preserve-3d;
             perspective: 1000px;
             cursor: pointer;
@@ -425,7 +424,32 @@
         .tag-card:hover { box-shadow: var(--shadow-lg); }
         .tag-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
         .tag-card:hover .tag-image { transform: scale(1.05); }
+        .tag-card::before,
+        .service-card::before,
+        .news-card::before {
 
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background: radial-gradient(
+                600px circle at var(--x) var(--y),
+                rgba(255,255,255,0.35),
+                transparent 40%
+            );
+
+            opacity: 0;
+            transition: opacity 0.3s;
+
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .tag-card:hover::before,
+        .service-card:hover::before,
+        .news-card:hover::before {
+            opacity: 1;
+        }
         .tag-overlay {
             position: absolute;
             bottom: 0;
@@ -621,6 +645,17 @@
                 transform: translateY(-5px) !important;
             }
         }
+        .tag-card,
+        .service-card,
+        .news-card {
+
+            backdrop-filter: blur(6px);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            background: rgba(255,255,255,0.05);
+        }
+
 
         /* Добавляем класс для карточек, которые уже анимированы AOS */
         .aos-animate.tag-card,
@@ -630,16 +665,16 @@
         }
         /* Стили для управления трансформациями */
         .tag-card, .service-card, .news-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            will-change: transform;
+            transition: transform 0.45s cubic-bezier(.2,.8,.2,1),
+                        box-shadow 0.3s ease;
         }
 
-        /* Состояние без эффекта наклона */
-        .tag-card:not(.tilt-active),
-        .service-card:not(.tilt-active),
-        .news-card:not(.tilt-active) {
-            transform: none !important;
-        }
+<!--        /* Состояние без эффекта наклона */-->
+<!--        .tag-card:not(.tilt-active),-->
+<!--        .service-card:not(.tilt-active),-->
+<!--        .news-card:not(.tilt-active) {-->
+<!--            transform: none !important;-->
+<!--        }-->
 
         /* Для AOS анимаций */
         [data-aos].tag-card,
@@ -648,11 +683,18 @@
             transition-property: transform, opacity, box-shadow !important;
         }
 
-        /* Защита от конфликтов */
-        .aos-animate.tag-card:not(.tilt-active),
-        .aos-animate.service-card:not(.tilt-active),
-        .aos-animate.news-card:not(.tilt-active) {
-            transform: none !important;
+
+        /* Плавное появление карточек */
+        [data-aos="fade-up"] {
+            transform: translateY(120px) scale(0.92);
+            opacity: 0;
+            filter: blur(12px);
+        }
+
+        [data-aos="fade-up"].aos-animate {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            filter: blur(0);
         }
     </style>
 </head>
@@ -816,15 +858,8 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({
-            duration: 1000,
-            once: false,
-            mirror: true,
-            easing: 'ease-out-cubic',
-            offset: 100
-        });
 
-        const STRAPI_URL = '';
+        const STRAPI_URL = 'http://5.8.76.244:1337';
 
         let siteSettings = {};
 
@@ -1001,82 +1036,75 @@
 
         // ИСПРАВЛЕННАЯ ФУНКЦИЯ TILT EFFECT
         function initTiltEffect() {
-            const cards = document.querySelectorAll('.tag-card, .service-card, .news-card');
 
-            // Флаг для определения мобильного устройства
-            const isMobile = window.innerWidth <= 768;
+            const cards = document.querySelectorAll('.tag-card, .service-card');
 
             cards.forEach(card => {
-                // Удаляем старые обработчики, если они были
-                card.removeEventListener('mousemove', handleMouseMove);
-                card.removeEventListener('mouseleave', handleMouseLeave);
 
-                // Сохраняем ссылки на обработчики
-                card.handleMouseMove = function(e) {
-                    // Не применяем эффект на мобильных устройствах
-                    if (isMobile) return;
+                let frame;
+
+                card.addEventListener('mousemove', (e) => {
+
+                    card.classList.add('tilt-active');
+
+                    if (frame) cancelAnimationFrame(frame);
+
+                    frame = requestAnimationFrame(() => {
+
+                        const rect = card.getBoundingClientRect();
+
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+
+                        const rotateX = -(y - centerY) / 40;
+                        const rotateY = (x - centerX) / 40;
+
+                        card.style.transform =
+                            `perspective(900px)
+                             rotateX(${rotateX}deg)
+                             rotateY(${rotateY}deg)
+                             scale(1.015)`;
+                    });
+
+                });
+
+                card.addEventListener('mouseleave', () => {
+
+                    card.classList.remove('tilt-active');
+
+                    card.style.transform = '';
+
+                });
+
+            });
+
+        }
+        function initCursorLight() {
+
+            const cards = document.querySelectorAll(
+                '.tag-card, .service-card, .news-card'
+            );
+
+            cards.forEach(card => {
+
+                card.addEventListener('mousemove', e => {
 
                     const rect = card.getBoundingClientRect();
 
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
 
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
+                    card.style.setProperty('--x', `${x}px`);
+                    card.style.setProperty('--y', `${y}px`);
 
-                    const maxAngle = 2;
+                });
 
-                    const percentX = (x - centerX) / centerX;
-                    const percentY = (y - centerY) / centerY;
-
-                    const rotateY = percentX * maxAngle;
-                    const rotateX = -percentY * maxAngle;
-
-                    // Применяем только эффект наклона, сохраняя базовую трансформацию AOS
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(2px)`;
-                    card.style.transition = 'transform 0.1s ease';
-
-                    // Добавляем класс, чтобы отметить, что эффект активен
-                    card.classList.add('tilt-active');
-                };
-
-                card.handleMouseLeave = function() {
-                    if (isMobile) return;
-
-                    // Убираем только эффект наклона
-                    card.style.transform = '';
-                    card.style.transition = 'transform 0.3s ease';
-
-                    // Убираем класс эффекта
-                    card.classList.remove('tilt-active');
-
-                    // Принудительно перезапускаем AOS анимацию при следующем появлении
-                    setTimeout(() => {
-                        if (!card.classList.contains('aos-animate')) {
-                            card.style.transform = '';
-                        }
-                    }, 50);
-                };
-
-                // Добавляем обработчики
-                card.addEventListener('mousemove', card.handleMouseMove);
-                card.addEventListener('mouseleave', card.handleMouseLeave);
-
-                // Очищаем transform при уходе с страницы или при скролле
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (!entry.isIntersecting) {
-                            // Когда карточка уходит из viewport, сбрасываем transform
-                            card.style.transform = '';
-                            card.classList.remove('tilt-active');
-                        }
-                    });
-                }, { threshold: 0.1 });
-
-                observer.observe(card);
             });
-        }
 
+        }
         // Также добавим обработчик скролла для сброса трансформаций
         let scrollTimeout;
         window.addEventListener('scroll', () => {
@@ -1219,10 +1247,7 @@
                         </div>`;
                 }).join('');
 
-                // Вызываем tilt эффект после загрузки карточек
-                setTimeout(() => {
-                    initTiltEffect();
-                }, 100);
+
 
             } catch (e) {
                 console.error('Ошибка загрузки тегов:', e);
@@ -1272,10 +1297,7 @@
 
                 grid.innerHTML = gridHtml;
 
-                // Вызываем tilt эффект после загрузки карточек
-                setTimeout(() => {
-                    initTiltEffect();
-                }, 100);
+
 
             } catch (e) {
                 console.error('Ошибка загрузки направлений:', e);
@@ -1309,10 +1331,7 @@
                         </div>`;
                 }).join('');
 
-                // Вызываем tilt эффект после загрузки карточек
-                setTimeout(() => {
-                    initTiltEffect();
-                }, 100);
+
 
             } catch (e) {
                 console.error('Ошибка загрузки новостей:', e);
@@ -1345,11 +1364,19 @@
                 loadNews();
                 initPhuketMap();
                 initVideoParallax();
+                initCursorLight();
+
 
                 // Обновляем AOS после загрузки всего контента
                 setTimeout(() => {
-                    AOS.refresh();
 
+                    AOS.init({
+                        duration: 1000,
+                        once: false,
+                        easing: 'ease-out-cubic',
+                        offset: 100
+                    });
+                    AOS.refresh();
                     // Запускаем tilt эффект после того как AOS применил анимации
                     initTiltEffect();
                 }, 500);
