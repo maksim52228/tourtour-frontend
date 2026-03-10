@@ -137,7 +137,7 @@
     async function geocodeLocation(locationName) {
         if (!locationName || locationName.trim() === '') return null;
 
-        const query = `${locationName}, Phuket, Thailand`;
+        const query = `${locationName}`;
         console.log(`Поиск координат для: ${query}`);
 
         try {
@@ -338,7 +338,7 @@
                 return '<ul>' + listItems.map(i => `<li>${icon} ${i}</li>`).join('') + '</ul>';
             };
 
-            const tgUsername = 'Slabodukov';
+            const tgUsername = 'Ulyanova_AlinaA';
             const tgMessage = `Здравствуйте! Хочу забронировать экскурсию: ${title} (${currency}${price})`;
             const tgLink = `https://t.me/${tgUsername}?text=${encodeURIComponent(tgMessage)}`;
 
