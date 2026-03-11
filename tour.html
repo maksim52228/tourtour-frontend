@@ -243,13 +243,16 @@
         const allToursData = JSON.parse(localStorage.getItem('allToursMapData') || '[]');
         const existingIndex = allToursData.findIndex(t => t.id === currentTourData.id);
 
+        // Форматируем цену для карты тоже в рублях
+        const priceString = `${Number(currentTourData.price || 0).toLocaleString('ru-RU')} ₽`;
+
         const tourData = {
             id: currentTourData.id,
             title: currentTourData.title,
             lat: currentTourData.lat,
             lng: currentTourData.lng,
             slug: currentTourData.slug,
-            price: `${currentTourData.currency || '$'}${currentTourData.price || '0'}`,
+            price: priceString,
             mainImage: currentTourData.mainImage,
             locationName: currentTourData.locationName
         };
@@ -289,12 +292,18 @@
             }
 
             const tour = json.data[0];
+
+            // Получаем числовое значение цены
+            const rawPrice = tour.price ? Number(tour.price) : 0;
+            // Форматируем цену: пробелы как разделители тысяч и знак рубля в конце
+            const formattedPrice = `${rawPrice.toLocaleString('ru-RU')} ₽`;
+
             currentTourData = {
                 id: tour.id,
                 title: tour.title || 'Без названия',
                 slug: tour.slug,
-                price: tour.price,
-                currency: tour.currency || '$',
+                price: rawPrice, // сохраняем число для логики
+                currency: '₽',   // принудительно рубль
                 mainImage: null,
                 locationName: tour.location || tour.place || ''
             };
@@ -302,8 +311,6 @@
             const mainImgObj = tour.main_image || tour.mainImage;
             const galleryObj = tour.images || tour.gallery;
             const title = tour.title || 'Без названия';
-            const price = tour.price ? Number(tour.price).toLocaleString() : '0';
-            const currency = tour.currency || '$';
             const locationName = tour.location || tour.place || '';
 
             let mainImgUrl = getImageUrl(mainImgObj);
@@ -339,14 +346,15 @@
             };
 
             const tgUsername = 'Ulyanova_AlinaA';
-            const tgMessage = `Здравствуйте! Хочу забронировать экскурсию: ${title} (${currency}${price})`;
+            // Сообщение в Telegram тоже с новой ценой
+            const tgMessage = `Здравствуйте! Хочу забронировать экскурсию: ${title} (${formattedPrice})`;
             const tgLink = `https://t.me/${tgUsername}?text=${encodeURIComponent(tgMessage)}`;
 
             const html = `
                 <img src="${mainImgUrl}" class="hero-img" alt="${title}">
                 <div class="tour-header">
                     <h1 class="tour-title">${title}</h1>
-                    <div class="tour-price">${currency}${price}</div>
+                    <div class="tour-price">${formattedPrice}</div>
                 </div>
                 <div class="content-block">
                     <h3>📝 Описание</h3>
@@ -371,7 +379,6 @@
             `;
 
             document.getElementById('tourContainer').innerHTML = html;
-
 
             initTourMap(locationName, title);
 

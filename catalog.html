@@ -211,8 +211,10 @@
             if (!imgUrl && item.images && item.images.length) imgUrl = getImageUrl(item.images[0]);
             if (!imgUrl) imgUrl = 'https://placehold.co/400x300?text=Нет+фото';
 
-            const price = item.price ? Number(item.price).toLocaleString() : '0';
-            const currency = item.currency || '$';
+            // ИЗМЕНЕНИЕ ЗДЕСЬ: Принудительно рубли и знак после числа
+            const rawPrice = item.price ? Number(item.price) : 0;
+            const formattedPrice = `${rawPrice.toLocaleString('ru-RU')} ₽`;
+
             const rating = item.rating || 5.0;
             const isPopular = item.is_popular || item.isPopular;
             const link = `${basePath}tour.html?slug=${encodeURIComponent(slug)}`;
@@ -228,7 +230,7 @@
                         <div class="tour-category">Экскурсия</div>
                         <h3 class="tour-title">${title}</h3>
                         <div class="tour-price">
-                            <span>${currency}${price}</span>
+                            <span>${formattedPrice}</span>
                             <span style="font-size:14px; font-weight:600; color:#555;">Подробнее <i class="fas fa-arrow-right"></i></span>
                         </div>
                     </div>
