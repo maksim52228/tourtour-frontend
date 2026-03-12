@@ -1135,23 +1135,14 @@
             }, 100);
         }, { passive: true });
 
-        async function initPhuketMap() {
+        // Функция для определения оптимальных границ карты
+        async function map() {
             const mapContainer = document.getElementById('phuketMap');
             if (!mapContainer) return;
 
             console.log('Инициализация карты...');
 
             ymaps.ready(async function() {
-                const map = new ymaps.Map('phuketMap', {
-                    center: [7.8804, 98.3923],
-                    zoom: 10,
-                    controls: ['zoomControl', 'fullscreenControl']
-                });
-
-                map.controls.remove('searchControl');
-                map.controls.remove('trafficControl');
-                map.controls.remove('typeSelector');
-
                 try {
                     console.log('Загрузка данных об экскурсиях...');
                     const response = await fetch(`${STRAPI_URL}/api/tours?fields=title,price,location,place,slug&populate=*`);
@@ -1161,6 +1152,17 @@
                     const json = await response.json();
                     const tours = json.data || [];
 
+                    // Создаем карту с начальным приближением
+                    const map = new ymaps.Map('phuketMap', {
+                        center: [56.0153, 92.8932], // Красноярск
+                        zoom: 6, // Начальный зум, чтобы видеть всю страну
+                        controls: ['zoomControl', 'fullscreenControl']
+                    });
+
+                    map.controls.remove('searchControl');
+                    map.controls.remove('trafficControl');
+                    map.controls.remove('typeSelector');
+
                     if (tours.length === 0) {
                         console.log('Экскурсии не найдены.');
                         return;
@@ -1168,6 +1170,10 @@
 
                     console.log(`Найдено экскурсий: ${tours.length}. Начинаем поиск координат...`);
 
+                    // Массив для хранения всех найденных координат
+                    const allCoordinates = [];
+
+                    // Получаем координаты для всех локаций
                     for (const tour of tours) {
                         let locationName = tour.location || tour.place;
 
@@ -1181,7 +1187,7 @@
                         const price = tour.price ? `${tour.price} ฿` : '';
                         const slug = tour.slug;
 
-                        const searchQuery = `${locationName}, Phuket, Thailand`;
+                        const searchQuery = `${locationName}`;
                         console.log(`🔍 Ищем: "${locationName}"`);
 
                         const coords = await new Promise((resolve) => {
@@ -1201,33 +1207,131 @@
                         });
 
                         if (coords) {
-                            console.log(`✅ Найдено: ${coords}. Добавляем метку.`);
-
-                            const placemark = new ymaps.Placemark(coords, {
-                                balloonContentHeader: `<strong style="font-family:'Cormorant Garamond'; font-size:18px;">${title}</strong>`,
-                                balloonContentBody: `
-                                    <div style="font-family:'Inter'; font-size:13px; line-height:1.5;">
-                                        <p style="margin-bottom:8px; color:#555;">📍 ${locationName}</p>
-                                        <p style="font-weight:bold; color:#b6977c; font-size:15px; margin-bottom:12px;">${price}</p>
-                                        <a href="tour.html?slug=${slug}" style="display:inline-block; background:#b6977c; color:white; padding:6px 14px; text-decoration:none; border-radius:20px; font-size:12px;">Подробнее</a>
-                                    </div>
-                                `,
-                                hintContent: title
-                            }, {
-                                preset: 'islands#blueDotIcon',
-                                iconColor: '#007bff'
+                            allCoordinates.push({
+                                coords: coords,
+                                title: title,
+                                location: locationName,
+                                price: price,
+                                slug: slug
                             });
-
-                            map.geoObjects.add(placemark);
+                            console.log(`✅ Найдено: ${coords}`);
                         } else {
                             console.warn(`❌ Не найдено место: "${locationName}"`);
                         }
+                    }
+
+                    if (allCoordinates.length === 0) {
+                        console.log('Нет координат для отображения.');
+                        return;
+                    }
+
+                    // Добавляем метки на карту
+                    allCoordinates.forEach((item) => {
+                        const placemark = new ymaps.Placemark(item.coords, {
+                            balloonContentHeader: `<strong style="font-family:'Cormorant Garamond'; font-size:18px;">${item.title}</strong>`,
+                            balloonContentBody: `
+                                <div style="font-family:'Inter'; font-size:13px; line-height:1.5;">
+                                    <p style="margin-bottom:8px; color:#555;">📍 ${item.location}</p>
+                                    <p style="font-weight:bold; color:#b6977c; font-size:15px; margin-bottom:12px;">${item.price}</p>
+                                    <a href="tour.html?slug=${item.slug}" style="display:inline-block; background:#b6977c; color:white; padding:6px 14px; text-decoration:none; border-radius:20px; font-size:12px;">Подробнее</a>
+                                </div>
+                            `,
+                            hintContent: item.title
+                        }, {
+                            preset: 'islands#blueDotIcon',
+                            iconColor: '#007bff'
+                        });
+
+                        map.geoObjects.add(placemark);
+                    });
+
+                    console.log(`Добавлено ${allCoordinates.length} меток на карту.`);
+
+                    // ===== ВАЖНАЯ ЧАСТЬ: АВТОМАТИЧЕСКИЙ ПОДБОР МАСШТАБА =====
+
+                    // Если меток больше 1, подбираем масштаб так, чтобы все были видны
+                    if (allCoordinates.length > 1) {
+                        // Создаем границы карты
+                        const bounds = map.geoObjects.getBounds();
+
+                        if (bounds) {
+                            // Устанавливаем границы с отступами по краям
+                            map.setBounds(bounds, {
+                                checkZoomRange: true, // Проверяем доступный диапазон зума
+                                zoomMargin: 50, // Отступы от краев в пикселях
+                                preciseZoom: true // Точный подбор зума
+                            });
+
+                            console.log('✅ Масштаб автоматически подобран, чтобы все метки были видны');
+                        }
+                    }
+                    // Если метка одна, центрируем на ней с комфортным зумом
+                    else if (allCoordinates.length === 1) {
+                        map.setCenter(allCoordinates[0].coords, 12);
+                        console.log('✅ Карта сцентрирована на единственной метке');
+                    }
+
+                    // Если меток много (больше 15), включаем кластеризацию для лучшей производительности
+                    if (allCoordinates.length > 15) {
+                        // Создаем кластеризатор
+                        const clusterer = new ymaps.Clusterer({
+                            preset: 'islands#invertedBlueClusterIcons',
+                            groupByCoordinates: false,
+                            clusterDisableClickZoom: false,
+                            clusterHideIconOnBalloonOpen: false,
+                            geoObjectHideIconOnBalloonOpen: false,
+                            gridSize: 64, // Размер ячейки кластеризации
+                            maxZoom: 15 // Максимальный зум для кластеризации
+                        });
+
+                        // Перемещаем все метки в кластеризатор
+                        map.geoObjects.removeAll();
+
+                        const placemarks = allCoordinates.map(item =>
+                            new ymaps.Placemark(item.coords, {
+                                balloonContentHeader: `<strong style="font-family:'Cormorant Garamond'; font-size:18px;">${item.title}</strong>`,
+                                balloonContentBody: `
+                                    <div style="font-family:'Inter'; font-size:13px; line-height:1.5;">
+                                        <p style="margin-bottom:8px; color:#555;">📍 ${item.location}</p>
+                                        <p style="font-weight:bold; color:#b6977c; font-size:15px; margin-bottom:12px;">${item.price}</p>
+                                        <a href="tour.html?slug=${item.slug}" style="display:inline-block; background:#b6977c; color:white; padding:6px 14px; text-decoration:none; border-radius:20px; font-size:12px;">Подробнее</a>
+                                    </div>
+                                `,
+                                hintContent: item.title
+                            }, {
+                                preset: 'islands#blueDotIcon',
+                                iconColor: '#007bff'
+                            })
+                        );
+
+                        clusterer.add(placemarks);
+                        map.geoObjects.add(clusterer);
+
+                        // После добавления кластеризатора, снова подбираем границы
+                        setTimeout(() => {
+                            const bounds = clusterer.getBounds();
+                            if (bounds) {
+                                map.setBounds(bounds, {
+                                    checkZoomRange: true,
+                                    zoomMargin: 50,
+                                    preciseZoom: true
+                                });
+                            }
+                        }, 100);
+
+                        console.log('✅ Включена кластеризация для улучшения производительности');
                     }
 
                     console.log('Обработка экскурсий завершена.');
 
                 } catch (error) {
                     console.error('Критическая ошибка в функции карты:', error);
+                    // В случае ошибки создаем карту с центром по умолчанию
+                    const map = new ymaps.Map('phuketMap', {
+                        center: [13.736717, 100.523186],
+                        zoom: 6,
+                        controls: ['zoomControl', 'fullscreenControl']
+                    });
                 }
 
                 setTimeout(() => AOS.refresh(), 300);
@@ -1378,7 +1482,7 @@
                 loadPopularRoutes();
                 loadServiceDirections();
                 loadNews();
-                initPhuketMap();
+                map();
                 initVideoParallax();
                 initCursorLight();
 
