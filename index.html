@@ -2490,20 +2490,21 @@
                 };
 
                 try {
-                    // Отправляем ТОЛЬКО на наш сервер
                     const response = await fetch(this.config.apiEndpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify(payload)  // ← Только эти 4 поля!
                     });
 
-                    if (!response.ok) throw new Error('Server error');
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Server ${response.status}: ${errorText}`);
+                    }
                     return await response.json();
 
                 } catch (e) {
                     console.error('❌ Ошибка отправки:', e);
-                    // Не показываем пользователю технические детали
-                    this.addMessage('⚠️ Не удалось отправить сообщение. Попробуйте позже.', 'admin');
+                    this.addMessage('⚠️ Не удалось отправить. Попробуйте позже.', 'admin');
                 }
             }
 
