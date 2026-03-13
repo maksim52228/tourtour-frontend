@@ -2312,7 +2312,7 @@
         // ===== CHAT CONFIG =====
         const CHAT_CONFIG = {
 
-            apiEndpoint: '/api/chat' // или '/api/chat' для относительного пути
+            apiEndpoint: '/api/chat'
         };
 
         // ===== CHAT LOGIC =====
@@ -2563,7 +2563,7 @@
             // 🔧 Замените на ваши реальные данные
             CHAT_CONFIG.telegramBotToken = 'ВАШ_ТОКЕН_БОТА'; // от @BotFather
             CHAT_CONFIG.telegramChatId = 'ВАШ_CHAT_ID';      // ваш ID или @username
-            CHAT_CONFIG.apiEndpoint = 'https://ваш-сервер.рф/api/chat'; // или '/api/chat' для относительного пути
+            CHAT_CONFIG.apiEndpoint = '/api/chat'; //
 
             window.siteChat = new SiteChat(CHAT_CONFIG);
         });
