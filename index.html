@@ -14,8 +14,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-
-
     <!-- Иконки -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="https://эмоциижизни.рф/favicon.png">
@@ -33,8 +31,6 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/107267000" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
-
-
 
     <!-- Анимации AOS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -926,225 +922,7 @@
                 padding: 30px 20px;
             }
         }
-        /* ===== CHAT WIDGET STYLES ===== */
-        #chatWidget {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 9999;
-            font-family: 'Inter', sans-serif;
-        }
 
-        .chat-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0088cc, #00bfff);
-            color: white;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 136, 204, 0.4);
-            transition: all 0.3s;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(0, 136, 204, 0.6);
-        }
-
-        .chat-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff4757;
-            color: white;
-            font-size: 11px;
-            font-weight: 600;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 6px;
-        }
-
-        .chat-window {
-            position: absolute;
-            bottom: 75px;
-            right: 0;
-            width: 340px;
-            max-height: 500px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .chat-window.hidden {
-            display: none;
-        }
-
-        .chat-header {
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #0088cc, #00bfff);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        #chatClose {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .chat-auth, .chat-interface {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .chat-auth {
-            text-align: center;
-        }
-
-        .chat-auth p {
-            margin: 0 0 15px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        #userNameInput, #chatInput {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        #userNameInput:focus, #chatInput:focus {
-            border-color: #0088cc;
-        }
-
-        .chat-send-btn {
-            padding: 12px 20px;
-            background: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .chat-send-btn:hover {
-            background: #0077b5;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            max-height: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 5px 0;
-        }
-
-        .chat-message {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 14px;
-            line-height: 1.4;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .chat-message.user {
-            align-self: flex-end;
-            background: #0088cc;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-message.admin {
-            align-self: flex-start;
-            background: #f0f0f0;
-            color: #333;
-            border-bottom-left-radius: 4px;
-        }
-
-        .chat-message .time {
-            display: block;
-            font-size: 10px;
-            opacity: 0.7;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input-area #chatInput {
-            flex: 1;
-        }
-
-        .chat-hint {
-            text-align: center;
-            color: #999;
-            font-size: 11px;
-            margin-top: 5px;
-        }
-
-        /* Скроллбар для сообщений */
-        .chat-messages::-webkit-scrollbar {
-            width: 5px;
-        }
-        .chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #aaa;
-        }
 
         @media (max-width: 480px) {
             .chat-window {
@@ -1193,6 +971,101 @@
             transform: translateY(0) scale(1);
             opacity: 1;
             filter: blur(0);
+        }
+
+        /* ===== КНОПКА ПОМОЩИ (TELEGRAM) ===== */
+        .help-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), #d4b59e);
+        color: white;
+        border-radius: 60px;
+        box-shadow: 0 4px 15px rgba(182, 151, 124, 0.3);
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        white-space: nowrap;
+    }
+
+    .help-button i {
+        font-size: 28px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .help-button:hover {
+        width: 310px;
+        padding-left: 20px;
+        gap: 15px;
+        box-shadow: 0 8px 25px rgba(182, 151, 124, 0.5);
+        background: linear-gradient(135deg, #c7a78a, #e0c5b4);
+        border-color: white;
+        justify-content: flex-start;
+    }
+
+    .help-button:hover i {
+        position: relative;
+        left: 0;
+        transform: translateX(0) rotate(-5deg) scale(1.1);
+    }
+
+    .help-button .help-text {
+        display: inline-block;
+        opacity: 0;
+        transition: opacity 0.3s ease 0.1s;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .help-button:hover .help-text {
+        opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+        .help-button {
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+        }
+
+        .help-button i {
+            font-size: 24px;
+        }
+
+        .help-button:hover {
+            width: 210px;
+            padding-left: 15px;
+        }
+
+        .help-button .help-text {
+            font-size: 12px;
+        }
+    }
+
+
+
+        @media (max-width: 480px) {
+            .help-button {
+                padding: 12px 20px;
+                bottom: 15px;
+                right: 15px;
+            }
+            .help-button .help-text {
+                display: none; /* На совсем маленьких экранах только иконка */
+            }
         }
     </style>
 </head>
@@ -1419,41 +1292,13 @@
                 &copy; 2026 Эмоции Жизни
             </div>
         </div>
-
     </footer>
-    <!-- ===== CHAT WIDGET ===== -->
-    <div id="chatWidget">
-        <!-- Кнопка открытия чата -->
-        <button id="chatToggle" class="chat-btn">
-            <i class="fas fa-comments"></i>
-            <span class="chat-badge" id="chatBadge" style="display:none;">0</span>
-        </button>
 
-        <!-- Окно чата -->
-        <div id="chatWindow" class="chat-window hidden">
-            <div class="chat-header">
-                <span>💬 Поддержка</span>
-                <button id="chatClose"><i class="fas fa-times"></i></button>
-            </div>
-
-            <!-- Экран входа (ввод имени) -->
-            <div id="chatAuth" class="chat-auth">
-                <p>Представьтесь, чтобы начать чат</p>
-                <input type="text" id="userNameInput" placeholder="Ваше имя" maxlength="30">
-                <button id="chatStartBtn" class="chat-send-btn">Начать чат</button>
-            </div>
-
-            <!-- Экран чата -->
-            <div id="chatInterface" class="chat-interface hidden">
-                <div id="chatMessages" class="chat-messages"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Напишите сообщение..." maxlength="500">
-                    <button id="chatSendBtn" class="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-                <small class="chat-hint">Ответ может занять несколько минут</small>
-            </div>
-        </div>
-    </div>
+    <!-- ===== КНОПКА ПОМОЩИ В TELEGRAM ===== -->
+    <a href="https://t.me/Ulyanova_AlinaA" target="_blank" class="help-button" id="helpButton">
+        <i class="fab fa-telegram-plane"></i>
+        <span class="help-text">Связь с администратором</span>
+    </a>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1544,6 +1389,7 @@
 
                     const telegramLink = document.getElementById('telegramLink');
                     const footerTelegram = document.getElementById('footerTelegram');
+                    const helpButton = document.getElementById('helpButton');
 
                     if (siteSettings.telegram) {
                         if (telegramLink) {
@@ -1554,6 +1400,11 @@
                         if (footerTelegram) {
                             footerTelegram.textContent = siteSettings.telegram.startsWith('@') ?
                                 siteSettings.telegram : `@${siteSettings.telegram}`;
+                        }
+                        // Также обновляем кнопку помощи
+                        if (helpButton) {
+                            let telegramUsername = siteSettings.telegram.replace('@', '');
+                            helpButton.href = `https://t.me/${telegramUsername}`;
                         }
                     }
 
@@ -2309,291 +2160,7 @@
                 form.addEventListener('submit', submitReview);
             }
         }
-        // ===== CHAT CONFIG =====
-        const CHAT_CONFIG = {
 
-            apiEndpoint: '/api/chat'
-        };
-
-        // ===== CHAT LOGIC =====
-        class SiteChat {
-            constructor(config) {
-                this.config = config;
-                this.userId = this.getUserId();
-
-                // 🔥 Загружаем имя из localStorage
-                this.userName = localStorage.getItem('chatUserName') || '';
-
-                this.messages = [];
-                this.pollingInterval = null;
-
-                console.log('🔧 Chat initialized:', {
-                    userId: this.userId,
-                    userName: this.userName,
-                    hasName: !!this.userName
-                });
-            }
-
-            // Получаем или создаём уникальный ID пользователя
-            getUserId() {
-                let id = localStorage.getItem('chatUserId');
-                if (!id) {
-                    id = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-                    localStorage.setItem('chatUserId', id);
-                }
-                return id;
-            }
-
-            init() {
-                this.cacheElements();
-                this.bindEvents();
-                this.loadMessages();
-
-                // 🔥 ПРОВЕРКА: Если имя уже сохранено — показываем чат сразу
-                if (this.userName && this.userName.trim().length > 0) {
-                    this.showInterface();
-                    this.startPolling();
-                    console.log('✅ Пользователь авторизован:', this.userName);
-                } else {
-                    // Показываем экран ввода имени
-                    this.elements.auth.classList.remove('hidden');
-                    this.elements.interface.classList.add('hidden');
-                    console.log('ℹ️ Требуется ввод имени');
-                }
-            }
-
-            cacheElements() {
-                this.elements = {
-                    toggle: document.getElementById('chatToggle'),
-                    window: document.getElementById('chatWindow'),
-                    close: document.getElementById('chatClose'),
-                    auth: document.getElementById('chatAuth'),
-                    interface: document.getElementById('chatInterface'),
-                    nameInput: document.getElementById('userNameInput'),
-                    startBtn: document.getElementById('chatStartBtn'),
-                    messages: document.getElementById('chatMessages'),
-                    input: document.getElementById('chatInput'),
-                    sendBtn: document.getElementById('chatSendBtn'),
-                    badge: document.getElementById('chatBadge')
-                };
-            }
-
-            bindEvents() {
-                // Открытие/закрытие
-                this.elements.toggle.addEventListener('click', () => this.toggleWindow());
-                this.elements.close.addEventListener('click', () => this.hideWindow());
-
-                // Начало чата
-                this.elements.startBtn.addEventListener('click', () => this.startChat());
-                this.elements.nameInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.startChat();
-                });
-
-                // Отправка сообщения
-                this.elements.sendBtn.addEventListener('click', () => this.sendMessage());
-                this.elements.input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.sendMessage();
-                });
-
-                // Закрытие при клике вне виджета
-                document.addEventListener('click', (e) => {
-                    if (!this.elements.window.contains(e.target) &&
-                        !this.elements.toggle.contains(e.target) &&
-                        !this.elements.window.classList.contains('hidden')) {
-                        this.hideWindow();
-                    }
-                });
-            }
-
-            toggleWindow() {
-                this.elements.window.classList.toggle('hidden');
-                if (!this.elements.window.classList.contains('hidden')) {
-                    this.elements.input?.focus();
-                }
-            }
-
-            hideWindow() {
-                this.elements.window.classList.add('hidden');
-            }
-
-            async startChat() {
-                const name = this.elements.nameInput.value.trim();
-                if (!name || name.length < 2) {
-                    this.elements.nameInput.style.borderColor = '#ff4757';
-                    setTimeout(() => this.elements.nameInput.style.borderColor = '#e0e0e0', 2000);
-                    return;
-                }
-
-                this.userName = name;
-
-                // 🔥 СОХРАНЯЕМ имя в localStorage
-                localStorage.setItem('chatUserName', name);
-
-                // Отправляем уведомление админу о новом пользователе
-                await this.sendToTelegram(`👋 Первый вход: ${name} (ID: ${this.userId})`);
-
-                // Переключаем экраны
-                this.elements.auth.classList.add('hidden');
-                this.elements.interface.classList.remove('hidden');
-
-                // Запускаем опрос ответов
-                this.startPolling();
-
-                // Приветственное сообщение (если чат пустой)
-                if (this.messages.length === 0) {
-                    this.addMessage('Здравствуйте! Чем могу помочь?', 'admin');
-                }
-            }
-
-            async sendMessage() {
-                const text = this.elements.input.value.trim();
-                if (!text) return;
-
-                // Добавляем сообщение в чат
-                this.addMessage(text, 'user');
-                this.elements.input.value = '';
-
-                // Сохраняем в историю
-                this.messages.push({
-                    id: Date.now(),
-                    text,
-                    sender: 'user',
-                    time: new Date().toISOString()
-                });
-                this.saveMessages();
-
-                // Отправляем в Telegram
-                await this.sendToTelegram(`💬 ${this.userName}:\n${text}`, {
-                    userId: this.userId,
-                    userName: this.userName
-                });
-            }
-
-            addMessage(text, sender) {
-                const msgEl = document.createElement('div');
-                msgEl.className = `chat-message ${sender}`;
-
-                const time = new Date().toLocaleTimeString('ru-RU', {
-                    hour: '2-digit', minute: '2-digit'
-                });
-
-                msgEl.innerHTML = `
-                    ${text}
-                    <span class="time">${time}</span>
-                `;
-
-                this.elements.messages.appendChild(msgEl);
-                this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
-
-                // Показываем бейдж если чат закрыт
-                if (this.elements.window.classList.contains('hidden') && sender === 'admin') {
-                    this.showBadge();
-                }
-            }
-
-            showBadge() {
-                const badge = this.elements.badge;
-                let count = parseInt(badge.textContent) || 0;
-                badge.textContent = count + 1;
-                badge.style.display = 'flex';
-
-                // Скрыть бейдж при открытии чата
-                const hideOnOpen = () => {
-                    badge.style.display = 'none';
-                    badge.textContent = '0';
-                    this.elements.toggle.removeEventListener('click', hideOnOpen);
-                };
-                this.elements.toggle.addEventListener('click', hideOnOpen);
-            }
-
-            async sendToTelegram(text, extra = {}) {
-                const payload = {
-                    text: text,
-                    userId: this.userId,
-                    userName: this.userName,
-                    timestamp: new Date().toISOString()
-                };
-
-                try {
-                    const response = await fetch(this.config.apiEndpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)  // ← Только эти 4 поля!
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Server ${response.status}: ${errorText}`);
-                    }
-                    return await response.json();
-
-                } catch (e) {
-                    console.error('❌ Ошибка отправки:', e);
-                    this.addMessage('⚠️ Не удалось отправить. Попробуйте позже.', 'admin');
-                }
-            }
-
-
-            // Опрос сервера на наличие новых ответов
-            startPolling() {
-                if (this.pollingInterval) clearInterval(this.pollingInterval);
-
-                this.pollingInterval = setInterval(async () => {
-                    try {
-                        const response = await fetch(
-                            `${this.config.apiEndpoint}?userId=${this.userId}`
-                        );
-                        if (!response.ok) return;
-
-                        const data = await response.json();
-                        if (data.messages && Array.isArray(data.messages)) {
-                            data.messages.forEach(msg => {
-                                // Добавляем только новые сообщения
-                                if (!this.messages.find(m => m.id === msg.id)) {
-                                    this.addMessage(msg.text, 'admin');
-                                    this.messages.push(msg);
-                                }
-                            });
-                            this.saveMessages();
-                        }
-                    } catch (e) {
-                        // Игнорируем ошибки опроса
-                    }
-                }, 5000); // Проверка каждые 5 секунд
-            }
-
-            loadMessages() {
-                const saved = localStorage.getItem(`chatMessages_${this.userId}`);
-                if (saved) {
-                    this.messages = JSON.parse(saved);
-                    this.messages.forEach(msg => {
-                        this.addMessage(msg.text, msg.sender);
-                    });
-                }
-            }
-
-            saveMessages() {
-                localStorage.setItem(`chatMessages_${this.userId}`, JSON.stringify(this.messages));
-            }
-
-            stopPolling() {
-                if (this.pollingInterval) {
-                    clearInterval(this.pollingInterval);
-                    this.pollingInterval = null;
-                }
-            }
-        }
-
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
-        document.addEventListener('DOMContentLoaded', () => {
-            // 🔧 Замените на ваши реальные данные
-            CHAT_CONFIG.telegramBotToken = 'ВАШ_ТОКЕН_БОТА'; // от @BotFather
-            CHAT_CONFIG.telegramChatId = 'ВАШ_CHAT_ID';      // ваш ID или @username
-            CHAT_CONFIG.apiEndpoint = '/api/chat'; //
-
-            window.siteChat = new SiteChat(CHAT_CONFIG);
-        });
-        window.addEventListener('resize', handleResize);
 
         document.addEventListener('DOMContentLoaded', () => {
             loadSiteSettings().then(() => {
@@ -2625,5 +2192,3 @@
     </script>
 </body>
 </html>
-
-
