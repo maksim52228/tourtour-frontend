@@ -2339,11 +2339,14 @@
             init() {
                 this.cacheElements();
                 this.bindEvents();
+
+                // 🔥 Загружаем сообщения СРАЗУ
+                this.loadMessages();
+
                 if (this.userName) {
                     this.showInterface();
                     this.startPolling();
                 }
-                this.loadMessages();
             }
 
             cacheElements() {
