@@ -2320,10 +2320,18 @@
             constructor(config) {
                 this.config = config;
                 this.userId = this.getUserId();
+
+                // 🔥 Загружаем имя из localStorage
                 this.userName = localStorage.getItem('chatUserName') || '';
+
                 this.messages = [];
                 this.pollingInterval = null;
-                this.init();
+
+                console.log('🔧 Chat initialized:', {
+                    userId: this.userId,
+                    userName: this.userName,
+                    hasName: !!this.userName
+                });
             }
 
             // Получаем или создаём уникальный ID пользователя
@@ -2339,13 +2347,18 @@
             init() {
                 this.cacheElements();
                 this.bindEvents();
-
-                // 🔥 Загружаем сообщения СРАЗУ
                 this.loadMessages();
 
-                if (this.userName) {
+                // 🔥 ПРОВЕРКА: Если имя уже сохранено — показываем чат сразу
+                if (this.userName && this.userName.trim().length > 0) {
                     this.showInterface();
                     this.startPolling();
+                    console.log('✅ Пользователь авторизован:', this.userName);
+                } else {
+                    // Показываем экран ввода имени
+                    this.elements.auth.classList.remove('hidden');
+                    this.elements.interface.classList.add('hidden');
+                    console.log('ℹ️ Требуется ввод имени');
                 }
             }
 
@@ -2412,15 +2425,24 @@
                 }
 
                 this.userName = name;
+
+                // 🔥 СОХРАНЯЕМ имя в localStorage
                 localStorage.setItem('chatUserName', name);
 
                 // Отправляем уведомление админу о новом пользователе
-                await this.sendToTelegram(`👤 Новый чат: ${name} (ID: ${this.userId})`);
+                await this.sendToTelegram(`👋 Первый вход: ${name} (ID: ${this.userId})`);
 
+                // Переключаем экраны
                 this.elements.auth.classList.add('hidden');
                 this.elements.interface.classList.remove('hidden');
+
+                // Запускаем опрос ответов
                 this.startPolling();
-                this.addMessage('Здравствуйте! Чем могу помочь?', 'admin');
+
+                // Приветственное сообщение (если чат пустой)
+                if (this.messages.length === 0) {
+                    this.addMessage('Здравствуйте! Чем могу помочь?', 'admin');
+                }
             }
 
             async sendMessage() {
