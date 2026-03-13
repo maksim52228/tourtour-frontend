@@ -1067,6 +1067,77 @@
                 display: none; /* На совсем маленьких экранах только иконка */
             }
         }
+        /* ===== ABOUT US SECTION STYLES ===== */
+        .about-section {
+            padding: 120px 0;
+            background: white;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .about-content {
+            padding-right: 20px;
+        }
+        .about-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+        .about-text h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            color: var(--dark);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .about-text p {
+            margin-bottom: 20px;
+        }
+        .about-image-wrapper {
+            position: relative;
+            border-radius: var(--border-radius-card);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            height: 500px;
+        }
+        .about-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .about-image-wrapper:hover .about-image {
+            transform: scale(1.05);
+        }
+        @media (max-width: 992px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .about-content {
+                padding-right: 0;
+                text-align: center;
+            }
+            .about-text {
+                text-align: left;
+            }
+            .about-image-wrapper {
+                height: 400px;
+                order: -1; /* Картинка сверху на планшетах */
+            }
+        }
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 80px 0;
+            }
+            .about-image-wrapper {
+                height: 300px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1084,9 +1155,10 @@
             </a>
             <nav>
                 <ul class="nav-menu" id="mainNav"></ul>
+
             </nav>
             <div class="header-actions">
-                <a href="tel:+66951905999" class="phone-link" id="phoneLink">
+                <a href="tel:+7 (923) 596-71-47" class="phone-link" id="phoneLink">
                     <i class="fas fa-phone"></i> <span id="phoneNumber">+66 95 1905 999</span>
                 </a>
                 <a href="#" target="_blank" class="btn-tg" id="telegramLink">
@@ -1168,6 +1240,24 @@
                 <a href="#news" class="section-btn">
                     <i class="fas fa-arrow-down"></i> К новостям
                 </a>
+            </div>
+        </div>
+    </section>
+    <!-- ===== ABOUT US SECTION ===== -->
+    <section class="about-section" id="aboutUs">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content" data-aos="fade-right">
+                    <h2 class="section-title" id="aboutTitle">О нас</h2>
+                    <p class="section-subtitle" style="text-align: left; margin-bottom: 30px;">наша история и миссия</p>
+                    <div class="about-text" id="aboutText">
+                        <!-- Сюда будет загружен текст из Strapi -->
+                        <div class="loading">загрузка...</div>
+                    </div>
+                </div>
+                <div class="about-image-wrapper" data-aos="fade-left">
+                    <img src="" alt="О компании" class="about-image" id="aboutImage">
+                </div>
             </div>
         </div>
     </section>
@@ -1429,7 +1519,9 @@
                         const footerDescription = document.getElementById('footerDescription');
                         if (footerDescription) footerDescription.textContent = siteSettings.footerDescription;
                     }
+
                 }
+                loadAboutUs();
             } catch (e) {
                 console.error('Ошибка загрузки настроек сайта:', e);
             }
@@ -1820,7 +1912,8 @@
                     grid.innerHTML = '<div class="loading">нет направлений</div>';
                     return;
                 }
-                let navHtml = '<li><a href="#heroSection" class="nav-link">Главная</a></li>';
+                let navHtml = '<li><a href="#heroSection" class="nav-link">Главная</a></li>' +
+                              '<li><a href="#aboutUs" class="nav-link">О нас</a></li>';
                 let gridHtml = '';
 
                 json.data.forEach((cat, i) => {
@@ -2161,7 +2254,47 @@
             }
         }
 
+        async function loadAboutUs() {
+            try {
+                const res = await fetch(`${STRAPI_URL}/api/about-us?populate=*`);
+                const json = await res.json();
 
+                const aboutData = json.data;
+                if (!aboutData) {
+                    console.log('Раздел "О нас" не найден.');
+                    return;
+                }
+
+                const aboutTitleEl = document.getElementById('aboutTitle');
+                const aboutTextEl = document.getElementById('aboutText');
+                const aboutImageEl = document.getElementById('aboutImage');
+
+                if (aboutTitleEl && aboutData.title) {
+                    aboutTitleEl.textContent = aboutData.title;
+                }
+
+                if (aboutTextEl && aboutData.content) {
+                    // Преобразуем Markdown/HTML из Strapi в обычный HTML
+                    // Для простоты здесь используется innerHTML, в продакшене лучше использовать библиотеку вроде 'marked' для Markdown
+                    aboutTextEl.innerHTML = aboutData.content.replace(/\n/g, '<br>');
+                }
+
+                if (aboutImageEl) {
+                    const imageUrl = getImageUrl(aboutData.image);
+                    if (imageUrl) {
+                        aboutImageEl.src = imageUrl;
+                    } else {
+                        // Если картинки нет, скрываем элемент или ставим заглушку
+                        aboutImageEl.style.display = 'none';
+                    }
+                }
+
+            } catch (e) {
+                console.error('Ошибка загрузки раздела "О нас":', e);
+                const aboutTextEl = document.getElementById('aboutText');
+                if (aboutTextEl) aboutTextEl.innerHTML = '<p>Не удалось загрузить информацию.</p>';
+            }
+        }
         document.addEventListener('DOMContentLoaded', () => {
             loadSiteSettings().then(() => {
                 loadHeroVideo();
