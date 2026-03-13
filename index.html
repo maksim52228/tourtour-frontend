@@ -671,6 +671,261 @@
 
             background: rgba(255,255,255,0.05);
         }
+        /* ===== REVIEWS SECTION ===== */
+        .reviews-section {
+            padding: 100px 0;
+            background: var(--bg);
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .review-card {
+            background: white;
+            border-radius: var(--border-radius-card);
+            padding: 35px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .review-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .review-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .review-info {
+            flex: 1;
+        }
+
+        .review-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: #aaa;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .review-rating {
+            color: #fbbf24;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .review-text {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .review-tour {
+            font-size: 13px;
+            color: var(--primary);
+            margin: 15px 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .review-tour a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 600;
+            border-bottom: 1px dashed transparent;
+        }
+
+        .review-tour a:hover {
+            color: var(--secondary);
+            border-bottom-color: var(--primary);
+        }
+
+        .review-tour i {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* ===== REVIEW FORM ===== */
+        .review-form-container {
+            background: white;
+            border-radius: var(--border-radius-card);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .review-form-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .review-form-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: 14px 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: #fafafa;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(182, 151, 124, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-rating {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .rating-star {
+            font-size: 28px;
+            color: #d0d0d0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rating-star.active,
+        .rating-star:hover {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .form-submit {
+            background: linear-gradient(135deg, var(--primary), #d4b59e);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-message {
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .form-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+
+        .form-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .reviews-grid {
+                grid-template-columns: 1fr;
+            }
+            .review-form-container {
+                padding: 30px 20px;
+            }
+        }
 
 
         /* Добавляем класс для карточек, которые уже анимированы AOS */
@@ -837,6 +1092,74 @@
             </div>
         </div>
     </section>
+    <!-- Reviews Section -->
+        <section class="reviews-section" id="reviews">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Отзывы наших клиентов</h2>
+                    <p class="section-subtitle">реальные истории путешествий</p>
+                </div>
+
+                <!-- Reviews Grid -->
+                <div class="reviews-grid" id="reviewsContainer">
+                    <div class="loading">загрузка отзывов...</div>
+                </div>
+
+                <!-- Review Form -->
+                <div class="review-form-container" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="review-form-title">Оставьте свой отзыв</h3>
+                    <p class="review-form-subtitle">Ваше мнение поможет другим путешественникам</p>
+
+                    <form class="review-form" id="reviewForm">
+                        <div class="form-group">
+                            <label class="form-label">Ваше имя</label>
+                            <input type="text" class="form-input" name="name" required placeholder="Иван Иванов">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" name="email" required placeholder="example@mail.ru">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Тур/Экскурсия</label>
+                            <select class="form-select" name="tour">
+                                <option value="">Выберите тур (необязательно)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Оценка</label>
+                            <div class="form-rating" id="ratingStars">
+                                <span class="rating-star" data-rating="1">★</span>
+                                <span class="rating-star" data-rating="2">★</span>
+                                <span class="rating-star" data-rating="3">★</span>
+                                <span class="rating-star" data-rating="4">★</span>
+                                <span class="rating-star" data-rating="5">★</span>
+                            </div>
+                            <input type="hidden" name="rating" id="ratingInput" value="5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ваш отзыв</label>
+                            <textarea class="form-textarea" name="text" required placeholder="Расскажите о ваших впечатлениях..."></textarea>
+                        </div>
+
+                        <div class="form-message" id="formMessage"></div>
+
+                        <button type="submit" class="form-submit" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i> Отправить отзыв
+                        </button>
+                    </form>
+                </div>
+
+                <div class="section-buttons">
+                    <a href="#heroSection" class="section-btn">
+                        <i class="fas fa-arrow-up"></i> Наверх
+                    </a>
+                </div>
+            </div>
+        </section>
 
     <!-- Footer -->
     <footer>
@@ -869,13 +1192,14 @@
                 &copy; 2026 Эмоции Жизни
             </div>
         </div>
+
     </footer>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
 
-        const STRAPI_URL = '';
+        const STRAPI_URL = 'http://5.8.76.244:1337';
 
         let siteSettings = {};
 
@@ -1403,7 +1727,7 @@
 
                 navHtml += `<li><a href="catalog.html" class="nav-link">Каталог</a></li>`;
                 nav.innerHTML = navHtml;
-
+                navHtml += `<li><a href="#reviews" class="nav-link">Отзывы</a></li>`;
                 const footerLinks = document.getElementById('footerLinks');
                 if (footerLinks) {
                     footerLinks.innerHTML = `
@@ -1473,6 +1797,258 @@
                 }
             });
         }
+        /**
+         * Получает ID тура по его slug через запрос к Strapi
+         * @param {string} slug - slug тура
+         * @returns {Promise<number|null>} - ID тура или null если не найден
+         */
+        async function getTourIdBySlug(slug) {
+            if (!slug || typeof slug !== 'string') return null;
+
+            // Если slug уже является числом (ID), возвращаем его
+            const numericId = parseInt(slug);
+            if (!isNaN(numericId)) return numericId;
+
+            try {
+                // Запрос к Strapi: ищем тур по slug, получаем только ID
+                const response = await fetch(
+                    `${STRAPI_URL}/api/tours?filters[slug][$eq]=${encodeURIComponent(slug)}&fields=id`,
+                    { headers: { 'Content-Type': 'application/json' } }
+                );
+
+                if (!response.ok) {
+                    console.warn(`⚠️ Не удалось получить тур по slug "${slug}": ${response.status}`);
+                    return null;
+                }
+
+                const json = await response.json();
+                const tour = json.data?.[0];
+
+                return tour?.id || null;
+            } catch (error) {
+                console.error(`❌ Ошибка при поиске тура по slug "${slug}":`, error);
+                return null;
+            }
+        }
+        // ===== REVIEWS FUNCTIONALITY =====
+        let selectedRating = 5;
+        let toursList = [];
+
+        // Инициализация звёзд рейтинга
+        function initRatingStars() {
+            const stars = document.querySelectorAll('.rating-star');
+            const ratingInput = document.getElementById('ratingInput');
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.dataset.rating);
+                    ratingInput.value = selectedRating;
+                    updateStars(selectedRating);
+                });
+
+                star.addEventListener('mouseenter', () => {
+                    updateStars(parseInt(star.dataset.rating));
+                });
+
+                star.addEventListener('mouseleave', () => {
+                    updateStars(selectedRating);
+                });
+            });
+        }
+
+        function updateStars(rating) {
+            const stars = document.querySelectorAll('.rating-star');
+            stars.forEach(star => {
+                if (parseInt(star.dataset.rating) <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Загрузка списка туров для формы
+        async function loadToursForForm() {
+            try {
+                // Запрашиваем id, slug и title
+                const res = await fetch(`${STRAPI_URL}/api/tours?fields=id,slug,title`);
+                const json = await res.json();
+                toursList = json.data || [];
+
+                const select = document.querySelector('select[name="tour"]');
+                if (select && toursList.length > 0) {
+                    toursList.forEach(tour => {
+                        const option = document.createElement('option');
+                        // Используем slug как value (он будет преобразован в ID при отправке)
+                        option.value = tour.slug || tour.id;
+                        option.textContent = tour.title || 'Тур';
+                        select.appendChild(option);
+                    });
+                }
+            } catch (e) {
+                console.error('Ошибка загрузки туров:', e);
+            }
+        }
+
+        // Загрузка отзывов — обновленная версия
+        async function loadReviews() {
+            const container = document.getElementById('reviewsContainer');
+            try {
+                // 🔧 Запрашиваем slug у связанного тура для кликабельной ссылки
+                const res = await fetch(`${STRAPI_URL}/api/reviews?populate[tour][fields][0]=title&populate[tour][fields][1]=slug&sort=createdAt:desc&pagination[limit]=9`);
+                const json = await res.json();
+
+                if (!json.data || json.data.length === 0) {
+                    container.innerHTML = '<div class="loading">отзывов пока нет</div>';
+                    return;
+                }
+
+                container.innerHTML = json.data.map((review, i) => {
+                    const name = review.name || 'Аноним';
+                    const initial = name.charAt(0).toUpperCase();
+                    const date = review.createdAt ? new Date(review.createdAt).toLocaleDateString('ru', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    }) : '';
+                    const rating = review.rating || 5;
+                    const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+                    const text = review.text || '';
+
+                    // 🔧 Получаем данные тура
+                    const tour = review.tour;
+                    const tourName = tour?.title || '';
+                    const tourSlug = tour?.slug || '';
+
+                    return `
+                        <div class="review-card" data-aos="fade-up" data-aos-delay="${i*70}">
+                            <div class="review-header">
+                                <div class="review-avatar">${initial}</div>
+                                <div class="review-info">
+                                    <div class="review-name">${name}</div>
+                                    <div class="review-date">${date}</div>
+                                </div>
+                            </div>
+
+                            <!-- 🔧 Туры теперь ПЕРЕД звёздами + кликабельные -->
+                            ${tourName && tourSlug
+                                ? `<div class="review-tour"><i class="fas fa-map-marker-alt"></i> <a href="tour.html?slug=${tourSlug}" target="_blank">${tourName}</a></div>`
+                                : ''}
+
+                            <div class="review-rating">${stars}</div>
+                            <div class="review-text">${text}</div>
+                        </div>`;
+                }).join('');
+            } catch (e) {
+                console.error('Ошибка загрузки отзывов:', e);
+                container.innerHTML = '<div class="loading">ошибка загрузки</div>';
+            }
+        }
+
+        // Отправка отзыва — продвинутая версия с поддержкой slug
+        async function submitReview(e) {
+            e.preventDefault();
+
+            const form = document.getElementById('reviewForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const messageEl = document.getElementById('formMessage');
+
+            const formData = new FormData(form);
+
+            const reviewData = {
+                name: formData.get('name')?.trim(),
+                email: formData.get('email')?.trim(),
+                rating: parseInt(formData.get('rating')) || 5,
+                text: formData.get('text')?.trim(),
+                published: false // Отзыв появится после модерации
+            };
+
+            // 🔧 Обработка поля tour: преобразуем slug в ID
+            const tourValue = formData.get('tour');
+            if (tourValue) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обработка...';
+
+                const tourId = await getTourIdBySlug(tourValue);
+
+                if (tourId) {
+                    // Strapi v4/v5: для relations передаём только ID
+                    reviewData.tour = tourId;
+                    console.log(`✅ Tour связан: ID ${tourId}`);
+                } else {
+                    console.warn(`⚠️ Не удалось найти тур по значению "${tourValue}", отправляем без связи`);
+                }
+            }
+
+            // Валидация обязательных полей
+            if (!reviewData.name || !reviewData.email || !reviewData.text) {
+                showMessage('Заполните все обязательные поля', 'error');
+                return;
+            }
+
+            if (reviewData.rating < 1 || reviewData.rating > 5) {
+                showMessage('Выберите оценку от 1 до 5', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+
+            try {
+                const res = await fetch(`${STRAPI_URL}/api/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data: reviewData }) // ✅ Правильная структура для Strapi v4/v5
+                });
+
+                const json = await res.json();
+                console.log('📤 Ответ Strapi:', json);
+
+                if (res.ok) {
+                    showMessage('Спасибо! Ваш отзыв отправлен на модерацию', 'success');
+                    form.reset();
+                    selectedRating = 5;
+                    updateStars(5);
+                    document.getElementById('ratingInput').value = 5;
+                    setTimeout(() => loadReviews(), 2000);
+                } else {
+                    const errorMsg = json.error?.message ||
+                                   json.error?.details?.errors?.[0]?.message ||
+                                   'Ошибка при отправке';
+                    showMessage(errorMsg, 'error');
+                    console.error('❌ Strapi error:', json.error);
+                }
+            } catch (err) {
+                console.error('❌ Ошибка сети:', err);
+                showMessage('Ошибка соединения. Проверьте адрес сервера.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить отзыв';
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('formMessage');
+            messageEl.textContent = text;
+            messageEl.className = `form-message ${type}`;
+            setTimeout(() => {
+                messageEl.className = 'form-message';
+            }, 5000);
+        }
+
+        // Инициализация отзывов
+        function initReviews() {
+            initRatingStars();
+            loadToursForForm();
+            loadReviews();
+
+            const form = document.getElementById('reviewForm');
+            if (form) {
+                form.addEventListener('submit', submitReview);
+            }
+        }
 
         window.addEventListener('resize', handleResize);
 
@@ -1483,6 +2059,7 @@
                 loadServiceDirections();
                 loadNews();
                 map();
+                initReviews();
                 initVideoParallax();
                 initCursorLight();
 
