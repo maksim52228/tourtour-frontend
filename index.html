@@ -53,6 +53,12 @@
             --transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
             --border-radius-card: 20px;
             --border-radius-image: 16px;
+            --z-header: 1000;
+            --z-help-button: 9999;
+            --z-overlay: 3;
+            --z-badge: 2;
+            --transform-z: 20px;
+            --transform-z-badge: 30px;
         }
 
         * {
@@ -125,7 +131,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000;
+            z-index: var(--z-header);
             transition: var(--transition);
             color: white;
         }
@@ -320,6 +326,7 @@
             will-change: transform;
             transition: transform 0.1s ease-out;
         }
+
         .hero-overlay {
             position: absolute;
             top: 0;
@@ -416,45 +423,37 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* ===== TAGS & SERVICES ===== */
-        .tags-section { padding: 100px 0; }
-        .tags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
-
-        .tag-card {
-            position: relative;
-            height: 500px;
-            border-radius: var(--border-radius-card);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
+        /* ===== TAGS, SERVICES & NEWS CARDS (общие стили) ===== */
+        .tag-card,
+        .service-card,
+        .news-card {
+            transition: transform 0.45s cubic-bezier(.2,.8,.2,1),
+                        box-shadow 0.3s ease;
             transform-style: preserve-3d;
             perspective: 1000px;
-            cursor: pointer;
-            /* Фиксим конфликт с AOS */
             will-change: transform;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--border-radius-card);
         }
 
-        .tag-card:hover { box-shadow: var(--shadow-lg); }
-        .tag-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
-        .tag-card:hover .tag-image { transform: scale(1.05); }
         .tag-card::before,
         .service-card::before,
         .news-card::before {
-
             content: "";
             position: absolute;
             inset: 0;
-
-            background: radial-gradient(
-                600px circle at var(--x) var(--y),
-                rgba(255,255,255,0.35),
-                transparent 40%
-            );
-
+            background: radial-gradient(600px circle at var(--x) var(--y),
+                        rgba(255,255,255,0.35),
+                        transparent 40%);
             opacity: 0;
             transition: opacity 0.3s;
-
             pointer-events: none;
-            z-index: 3;
+            z-index: var(--z-overlay);
         }
 
         .tag-card:hover::before,
@@ -462,7 +461,31 @@
         .news-card:hover::before {
             opacity: 1;
         }
-        .tag-overlay {
+
+        .tag-card:hover,
+        .service-card:hover,
+        .news-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tag-image,
+        .service-bg,
+        .news-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .tag-card:hover .tag-image,
+        .service-card:hover .service-bg,
+        .news-card:hover .news-img {
+            transform: scale(1.05);
+        }
+
+        .tag-overlay,
+        .service-content,
+        .news-content {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -470,55 +493,26 @@
             background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
             padding: 40px 30px;
             color: white;
-            transform: translateZ(20px);
+            transform: translateZ(var(--transform-z));
             border-bottom-left-radius: var(--border-radius-card);
             border-bottom-right-radius: var(--border-radius-card);
         }
 
-        .tag-badge {
-            font-size: 26px;
-            font-family: 'Cormorant Garamond', serif;
-            margin-bottom: 10px;
-            display: block;
+        .service-content,
+        .news-content {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
         }
 
+        /* Специфичные стили для каждого типа карточек */
+        .tags-section { padding: 100px 0; }
+        .tags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+        .tag-card { height: 500px; }
+        .tag-badge { font-size: 26px; font-family: 'Cormorant Garamond', serif; margin-bottom: 10px; display: block; }
         .tag-count { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
 
         .services-section { padding: 100px 0; background: white; }
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-
-        .service-card {
-            background: var(--bg);
-            border-radius: var(--border-radius-card);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            height: 280px;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            cursor: pointer;
-            /* Фиксим конфликт с AOS */
-            will-change: transform;
-        }
-
-        .service-card:hover { box-shadow: var(--shadow-lg); }
-        .service-bg { transition: transform 0.8s; width: 100%; height: 100%; object-fit: cover; }
-        .service-card:hover .service-bg { transform: scale(1.05); }
-
-        .service-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-            padding: 30px;
-            color: white;
-            transform: translateZ(20px);
-            border-bottom-left-radius: var(--border-radius-card);
-            border-bottom-right-radius: var(--border-radius-card);
-        }
-
+        .service-card { height: 280px; }
         .service-title {
             color: white;
             font-size: 26px;
@@ -527,6 +521,42 @@
             margin-bottom: 5px;
         }
 
+        .news-section { padding: 100px 0; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        .news-card { background: transparent; }
+        .news-img-wrapper {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+            border-top-left-radius: var(--border-radius-card);
+            border-top-right-radius: var(--border-radius-card);
+        }
+        .news-content {
+            position: relative;
+            background: white;
+            padding: 35px;
+            border-bottom-left-radius: var(--border-radius-card);
+            border-bottom-right-radius: var(--border-radius-card);
+        }
+        .hot-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transform: translateZ(var(--transform-z-badge));
+            border-radius: 30px;
+            z-index: var(--z-badge);
+        }
+        .news-date { font-size: 11px; color: #aaa; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
+        .news-title { font-size: 22px; margin-bottom: 15px; line-height: 1.3; font-family: 'Cormorant Garamond', serif; font-weight: 500; color: var(--dark); }
+        .news-excerpt { font-size: 15px; color: var(--text-light); font-weight: 300; line-height: 1.7; }
+
+        /* ===== INSPIRATION SECTION ===== */
         .inspiration-section { padding: 120px 0; background: var(--bg); text-align: center; }
         .inspiration-text {
             font-family: 'Cormorant Garamond', serif;
@@ -539,7 +569,6 @@
 
         /* ===== MAP SECTION ===== */
         .map-section { padding: 100px 0; background: var(--bg); }
-
         #phuketMap {
             height: 500px;
             width: 100%;
@@ -550,136 +579,62 @@
             overflow: hidden;
             border: 2px solid var(--primary);
         }
-
         .map-container { position: relative; margin-top: 40px; }
-
         .map-popup { font-family: 'Inter', sans-serif; font-size: 14px; }
         .map-popup strong { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--dark); }
 
-        /* ===== NEWS & FOOTER ===== */
-        .news-section { padding: 100px 0; }
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-
-        .news-card {
+        /* ===== ABOUT SECTION ===== */
+        .about-section {
+            padding: 120px 0;
             background: white;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .about-content { padding-right: 20px; }
+        .about-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+        .about-text h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            color: var(--dark);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .about-text p { margin-bottom: 20px; }
+        .about-image-wrapper {
+            position: relative;
             border-radius: var(--border-radius-card);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.3s, box-shadow 0.3s;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            cursor: pointer;
-            /* Фиксим конфликт с AOS */
-            will-change: transform;
+            box-shadow: var(--shadow-lg);
+            height: 500px;
         }
-
-        .news-card:hover { box-shadow: var(--shadow-lg); }
-        .news-img-wrapper {
-            height: 250px;
-            overflow: hidden;
-            position: relative;
-            border-top-left-radius: var(--border-radius-card);
-            border-top-right-radius: var(--border-radius-card);
-        }
-        .news-img {
+        .about-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s;
-            display: block;
+            transition: transform 0.8s ease;
         }
-        .news-card:hover .news-img { transform: scale(1.05); }
+        .about-image-wrapper:hover .about-image { transform: scale(1.05); }
 
-        .hot-badge {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: var(--primary);
-            color: white;
-            padding: 6px 14px;
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transform: translateZ(30px);
-            border-radius: 30px;
-            z-index: 2;
-        }
-
-        .news-content {
-            padding: 35px;
-            transform: translateZ(20px);
-            background: white;
-            border-bottom-left-radius: var(--border-radius-card);
-            border-bottom-right-radius: var(--border-radius-card);
-        }
-        .news-date { font-size: 11px; color: #aaa; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
-        .news-title { font-size: 22px; margin-bottom: 15px; line-height: 1.3; font-family: 'Cormorant Garamond', serif; font-weight: 500; }
-        .news-excerpt { font-size: 15px; color: var(--text-light); font-weight: 300; line-height: 1.7; }
-
-        footer { background: var(--dark); color: #aaa; padding: 80px 0 30px; position: relative; z-index: 2; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; margin-bottom: 60px; }
-        .footer-col h4 { color: var(--primary); margin-bottom: 25px; font-size: 16px; letter-spacing: 3px; text-transform: uppercase; }
-        .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: #aaa; font-size: 14px; font-weight: 300; }
-        .footer-links a:hover { color: white; padding-left: 8px; }
-        .copyright { text-align: center; border-top: 1px solid #3a3a3a; padding-top: 30px; color: #666; font-size: 12px; }
-
-        .loading { text-align: center; padding: 50px; color: #999; }
-
-        /* Класс для отключения эффекта наклона на мобильных устройствах */
-        @media (max-width: 768px) {
-            .nav-menu { display: none; }
-            .header-actions .phone-link { display: none; }
-            .hero p { font-size: 1rem; }
-            .tags-grid, .services-grid, .news-grid { grid-template-columns: 1fr; }
-            .section-buttons { flex-direction: column; align-items: center; }
-            .section-btn { width: 100%; justify-content: center; }
-            #phuketMap { height: 350px; border-radius: 16px; }
-            .logo-icon, .default-logo-icon {
-                width: 35px;
-                height: 35px;
-                font-size: 18px;
-            }
-            .company-name {
-                font-size: 20px;
-                white-space: normal;
-            }
-            #logoContainer {
-                gap: 8px;
-            }
-
-            /* Отключаем эффект наклона на мобильных */
-            .tag-card, .service-card, .news-card {
-                transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-            }
-
-            .tag-card:hover, .service-card:hover, .news-card:hover {
-                transform: translateY(-5px) !important;
-            }
-        }
-        .tag-card,
-        .service-card,
-        .news-card {
-
-            backdrop-filter: blur(6px);
-
-            border: 1px solid rgba(255,255,255,0.15);
-
-            background: rgba(255,255,255,0.05);
-        }
         /* ===== REVIEWS SECTION ===== */
         .reviews-section {
             padding: 100px 0;
             background: var(--bg);
         }
-
         .reviews-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
             margin-bottom: 50px;
         }
-
         .review-card {
             background: white;
             border-radius: var(--border-radius-card);
@@ -688,19 +643,16 @@
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
         }
-
         .review-card:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-5px);
         }
-
         .review-header {
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 20px;
         }
-
         .review-avatar {
             width: 60px;
             height: 60px;
@@ -714,38 +666,30 @@
             font-size: 24px;
             font-family: 'Cormorant Garamond', serif;
         }
-
-        .review-info {
-            flex: 1;
-        }
-
+        .review-info { flex: 1; }
         .review-name {
             font-family: 'Cormorant Garamond', serif;
             font-size: 18px;
             font-weight: 600;
             color: var(--dark);
         }
-
         .review-date {
             font-size: 12px;
             color: #aaa;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
-
         .review-rating {
             color: #fbbf24;
             font-size: 14px;
             margin-bottom: 15px;
         }
-
         .review-text {
             font-size: 15px;
             color: var(--text-light);
             line-height: 1.7;
             font-weight: 300;
         }
-
         .review-tour {
             font-size: 13px;
             color: var(--primary);
@@ -755,7 +699,6 @@
             align-items: center;
             gap: 6px;
         }
-
         .review-tour a {
             color: var(--primary);
             text-decoration: none;
@@ -763,16 +706,11 @@
             font-weight: 600;
             border-bottom: 1px dashed transparent;
         }
-
         .review-tour a:hover {
             color: var(--secondary);
             border-bottom-color: var(--primary);
         }
-
-        .review-tour i {
-            font-size: 12px;
-            opacity: 0.8;
-        }
+        .review-tour i { font-size: 12px; opacity: 0.8; }
 
         /* ===== REVIEW FORM ===== */
         .review-form-container {
@@ -783,7 +721,6 @@
             max-width: 700px;
             margin: 0 auto;
         }
-
         .review-form-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: 28px;
@@ -791,26 +728,22 @@
             margin-bottom: 10px;
             text-align: center;
         }
-
         .review-form-subtitle {
             color: var(--text-light);
             font-size: 14px;
             text-align: center;
             margin-bottom: 30px;
         }
-
         .review-form {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-
         .form-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         .form-label {
             font-size: 13px;
             font-weight: 500;
@@ -818,7 +751,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .form-input,
         .form-textarea,
         .form-select {
@@ -830,7 +762,6 @@
             transition: var(--transition);
             background: #fafafa;
         }
-
         .form-input:focus,
         .form-textarea:focus,
         .form-select:focus {
@@ -839,31 +770,23 @@
             background: white;
             box-shadow: 0 0 0 3px rgba(182, 151, 124, 0.1);
         }
-
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
+        .form-textarea { min-height: 120px; resize: vertical; }
         .form-rating {
             display: flex;
             gap: 10px;
             justify-content: center;
         }
-
         .rating-star {
             font-size: 28px;
             color: #d0d0d0;
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .rating-star.active,
         .rating-star:hover {
             color: #fbbf24;
             transform: scale(1.1);
         }
-
         .form-submit {
             background: linear-gradient(135deg, var(--primary), #d4b59e);
             color: white;
@@ -882,18 +805,15 @@
             gap: 10px;
             margin-top: 10px;
         }
-
         .form-submit:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-sm);
         }
-
         .form-submit:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
-
         .form-message {
             padding: 15px;
             border-radius: 12px;
@@ -901,218 +821,134 @@
             text-align: center;
             display: none;
         }
-
         .form-message.success {
             background: #d1fae5;
             color: #065f46;
             display: block;
         }
-
         .form-message.error {
             background: #fee2e2;
             color: #991b1b;
             display: block;
         }
 
-        @media (max-width: 768px) {
-            .reviews-grid {
-                grid-template-columns: 1fr;
-            }
-            .review-form-container {
-                padding: 30px 20px;
-            }
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--dark);
+            color: #aaa;
+            padding: 80px 0 30px;
+            position: relative;
+            z-index: 2;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+        .footer-col h4 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 16px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            color: #aaa;
+            font-size: 14px;
+            font-weight: 300;
+        }
+        .footer-links a:hover {
+            color: white;
+            padding-left: 8px;
+        }
+        .copyright {
+            text-align: center;
+            border-top: 1px solid #3a3a3a;
+            padding-top: 30px;
+            color: #666;
+            font-size: 12px;
         }
 
+        /* ===== HELP BUTTON ===== */
+        .help-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: var(--z-help-button);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), #d4b59e);
+            color: white;
+            border-radius: 60px;
+            box-shadow: 0 4px 15px rgba(182, 151, 124, 0.3);
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+        }
+        .help-button i {
+            font-size: 28px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .help-button:hover {
+            width: 310px;
+            padding-left: 20px;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(182, 151, 124, 0.5);
+            background: linear-gradient(135deg, #c7a78a, #e0c5b4);
+            border-color: white;
+            justify-content: flex-start;
+        }
+        .help-button:hover i {
+            position: relative;
+            left: 0;
+            transform: translateX(0) rotate(-5deg) scale(1.1);
+        }
+        .help-button .help-text {
+            display: inline-block;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .help-button:hover .help-text { opacity: 1; }
 
-        @media (max-width: 480px) {
-            .chat-window {
-                width: calc(100vw - 40px);
-                right: 10px;
-                bottom: 70px;
-            }
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #999;
         }
 
-
-        /* Добавляем класс для карточек, которые уже анимированы AOS */
-        .aos-animate.tag-card,
-        .aos-animate.service-card,
-        .aos-animate.news-card {
-            /* Базовые стили для анимированных карточек */
+        /* ===== AOS ANIMATIONS ===== */
+        [data-aos="fade-up"] {
+            transform: translateY(120px) scale(0.92);
+            opacity: 0;
+            filter: blur(12px);
         }
-        /* Стили для управления трансформациями */
-        .tag-card, .service-card, .news-card {
-            transition: transform 0.45s cubic-bezier(.2,.8,.2,1),
-                        box-shadow 0.3s ease;
+        [data-aos="fade-up"].aos-animate {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            filter: blur(0);
         }
-
-<!--        /* Состояние без эффекта наклона */-->
-<!--        .tag-card:not(.tilt-active),-->
-<!--        .service-card:not(.tilt-active),-->
-<!--        .news-card:not(.tilt-active) {-->
-<!--            transform: none !important;-->
-<!--        }-->
-
-        /* Для AOS анимаций */
         [data-aos].tag-card,
         [data-aos].service-card,
         [data-aos].news-card {
             transition-property: transform, opacity, box-shadow !important;
         }
 
-
-        /* Плавное появление карточек */
-        [data-aos="fade-up"] {
-            transform: translateY(120px) scale(0.92);
-            opacity: 0;
-            filter: blur(12px);
-        }
-
-        [data-aos="fade-up"].aos-animate {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            filter: blur(0);
-        }
-
-        /* ===== КНОПКА ПОМОЩИ (TELEGRAM) ===== */
-        .help-button {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--primary), #d4b59e);
-        color: white;
-        border-radius: 60px;
-        box-shadow: 0 4px 15px rgba(182, 151, 124, 0.3);
-        text-decoration: none;
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        white-space: nowrap;
-    }
-
-    .help-button i {
-        font-size: 28px;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .help-button:hover {
-        width: 310px;
-        padding-left: 20px;
-        gap: 15px;
-        box-shadow: 0 8px 25px rgba(182, 151, 124, 0.5);
-        background: linear-gradient(135deg, #c7a78a, #e0c5b4);
-        border-color: white;
-        justify-content: flex-start;
-    }
-
-    .help-button:hover i {
-        position: relative;
-        left: 0;
-        transform: translateX(0) rotate(-5deg) scale(1.1);
-    }
-
-    .help-button .help-text {
-        display: inline-block;
-        opacity: 0;
-        transition: opacity 0.3s ease 0.1s;
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        white-space: nowrap;
-    }
-
-    .help-button:hover .help-text {
-        opacity: 1;
-    }
-
-    @media (max-width: 768px) {
-        .help-button {
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-        }
-
-        .help-button i {
-            font-size: 24px;
-        }
-
-        .help-button:hover {
-            width: 210px;
-            padding-left: 15px;
-        }
-
-        .help-button .help-text {
-            font-size: 12px;
-        }
-    }
-
-
-
-        @media (max-width: 480px) {
-            .help-button {
-                padding: 12px 20px;
-                bottom: 15px;
-                right: 15px;
-            }
-            .help-button .help-text {
-                display: none; /* На совсем маленьких экранах только иконка */
-            }
-        }
-        /* ===== ABOUT US SECTION STYLES ===== */
-        .about-section {
-            padding: 120px 0;
-            background: white;
-        }
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-        .about-content {
-            padding-right: 20px;
-        }
-        .about-text {
-            font-size: 16px;
-            line-height: 1.8;
-            color: var(--text-light);
-            font-weight: 300;
-        }
-        .about-text h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 24px;
-            color: var(--dark);
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        .about-text p {
-            margin-bottom: 20px;
-        }
-        .about-image-wrapper {
-            position: relative;
-            border-radius: var(--border-radius-card);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            height: 500px;
-        }
-        .about-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
-        .about-image-wrapper:hover .about-image {
-            transform: scale(1.05);
-        }
+        /* ===== MEDIA QUERIES ===== */
         @media (max-width: 992px) {
             .about-grid {
                 grid-template-columns: 1fr;
@@ -1122,279 +958,479 @@
                 padding-right: 0;
                 text-align: center;
             }
-            .about-text {
-                text-align: left;
-            }
+            .about-text { text-align: left; }
             .about-image-wrapper {
                 height: 400px;
-                order: -1; /* Картинка сверху на планшетах */
+                order: -1;
             }
         }
+
         @media (max-width: 768px) {
-            .about-section {
-                padding: 80px 0;
+            /* Глобальные исправления */
+            body, html {
+                overflow-x: hidden;
+                width: 100%;
             }
-            .about-image-wrapper {
-                height: 300px;
+            .wrapper {
+                width: 100%;
+                overflow-x: hidden;
+                position: relative;
             }
+            section {
+                width: 100%;
+                overflow-x: hidden;
+                position: relative;
+            }
+
+            /* Контейнер */
+            .container {
+                padding: 0 15px;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            /* Шапка */
+            .site-header {
+                width: 100%;
+                left: 0;
+                right: 0;
+            }
+            .header-inner {
+                padding: 0 15px;
+                width: 100%;
+                max-width: 100vw;
+            }
+            .nav-menu { display: none; }
+            .header-actions .phone-link { display: none; }
+            #logoContainer {
+                flex-wrap: wrap;
+                max-width: 200px;
+                gap: 8px;
+            }
+            .company-name {
+                font-size: 20px;
+                white-space: normal;
+                word-break: break-word;
+            }
+            .logo-icon, .default-logo-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+
+            /* Hero секция */
+            .hero {
+                width: 100%;
+                left: 0;
+                right: 0;
+            }
+            .hero-content {
+                padding: 0 15px;
+                max-width: 100%;
+            }
+            .hero p {
+                font-size: 1rem;
+                padding: 12px 20px;
+                word-break: break-word;
+                max-width: 100%;
+            }
+            .hero-btn {
+                max-width: calc(100% - 30px);
+                white-space: normal;
+                text-align: center;
+                padding: 14px 20px;
+            }
+
+            /* Сетки */
+            .tags-grid,
+            .services-grid,
+            .news-grid,
+            .reviews-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                width: 100%;
+            }
+
+            /* Карточки */
+            .tag-card,
+            .service-card,
+            .news-card,
+            .review-card {
+                width: 100%;
+                margin: 0;
+                box-sizing: border-box;
+                transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+            }
+            .tag-card:hover,
+            .service-card:hover,
+            .news-card:hover {
+                transform: translateY(-5px) !important;
+            }
+
+            /* Кнопки */
+            .section-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0;
+                width: 100%;
+            }
+            .section-btn {
+                width: 100%;
+                justify-content: center;
+                box-sizing: border-box;
+                margin: 5px 0;
+            }
+
+            /* Карта */
+            #phuketMap {
+                height: 350px;
+                border-radius: 16px;
+            }
+
+            /* О нас */
+            .about-section { padding: 80px 0; }
+            .about-image-wrapper { height: 300px; }
+
+            /* Форма отзывов */
+            .review-form-container {
+                padding: 30px 20px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .form-input,
+            .form-textarea,
+            .form-select,
+            .form-submit {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* Футер */
+            footer {
+                width: 100%;
+                overflow-x: hidden;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 0;
+            }
+            .footer-col,
+            .footer-links {
+                width: 100%;
+                padding: 0;
+            }
+
+            /* Кнопка помощи */
+            .help-button {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            .help-button i { font-size: 24px; }
+            .help-button:hover {
+                width: 210px;
+                padding-left: 15px;
+            }
+            .help-button .help-text { font-size: 12px; }
+
+            /* Общие исправления */
+            * {
+                max-width: 100vw;
+                box-sizing: border-box;
+            }
+            img, video, iframe {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .company-name { font-size: 16px; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p {
+                font-size: 0.8rem;
+                padding: 10px 15px;
+            }
+            .section-btn {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+            .tag-overlay { padding: 25px 20px; }
+            .tag-badge { font-size: 22px; }
+            .review-card { padding: 25px 15px; }
+            .review-form-container { padding: 20px 12px; }
+            .form-submit {
+                padding: 14px 20px;
+                font-size: 12px;
+            }
+            .help-button {
+                width: 45px;
+                height: 45px;
+                bottom: 15px;
+                right: 15px;
+            }
+            .help-button:hover { width: 180px; }
+            .help-button .help-text { display: none; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Header -->
-    <header class="site-header hero-mode" id="siteHeader">
-        <div class="header-inner">
-            <a href="#heroSection" class="logo" id="logoLink">
-                <div id="logoContainer">
-                    <div class="default-logo-icon" id="defaultLogo">
-                        <i class="far fa-compass"></i>
+    <div class="wrapper">
+        <!-- Header -->
+        <header class="site-header hero-mode" id="siteHeader">
+            <div class="header-inner">
+                <a href="#heroSection" class="logo" id="logoLink">
+                    <div id="logoContainer">
+                        <div class="default-logo-icon" id="defaultLogo">
+                            <i class="far fa-compass"></i>
+                        </div>
+                        <span class="company-name" id="companyName">Эмоции Жизни</span>
                     </div>
-                    <span class="company-name" id="companyName">Эмоции Жизни</span>
-                </div>
-            </a>
-            <nav>
-                <ul class="nav-menu" id="mainNav"></ul>
-
-            </nav>
-            <div class="header-actions">
-                <a href="tel:+7 (923) 596-71-47" class="phone-link" id="phoneLink">
-                    <i class="fas fa-phone"></i> <span id="phoneNumber">+66 95 1905 999</span>
                 </a>
-                <a href="#" target="_blank" class="btn-tg" id="telegramLink">
-                    <i class="fab fa-telegram-plane"></i> Написать
-                </a>
-            </div>
-        </div>
-    </header>
+                <nav>
+                    <ul class="nav-menu" id="mainNav"></ul>
 
-    <!-- Hero Section -->
-    <section class="hero" id="heroSection">
-        <div class="hero-overlay"></div>
-        <video class="hero-video" id="heroVideo" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80"></video>
-        <div class="hero-content" data-aos="fade-up" data-aos-duration="1500">
-            <h1 id="heroTitle">вдохновение<br>в путешествиях</h1>
-            <p id="heroSubtitle">экскурсии · яхты · недвижимость</p>
-            <a href="#popularRoutes" class="hero-btn">
-                <i class="fas fa-arrow-down"></i> исследовать
-            </a>
-        </div>
-    </section>
-
-    <!-- Inspiration Quote -->
-    <section class="inspiration-section">
-        <div class="container">
-            <div class="inspiration-text" id="inspirationQuote">
-                Там, где заканчивается карта,<br>начинается настоящее путешествие.
-            </div>
-        </div>
-    </section>
-
-    <!-- Tags Section (Популярные маршруты) -->
-    <section class="tags-section" id="popularRoutes">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2 class="section-title">Популярные маршруты</h2>
-                <p class="section-subtitle">Выберите свой</p>
-            </div>
-            <div class="tags-grid" id="globalTagsContainer">
-                <div class="loading">загрузка...</div>
-            </div>
-            <div class="section-buttons">
-                <a href="#directions" class="section-btn">
-                    <i class="fas fa-arrow-down"></i> К направлениям
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section (Направления) -->
-    <section class="services-section" id="directions">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2 class="section-title">Направления</h2>
-                <p class="section-subtitle">всё для вас</p>
-            </div>
-            <div class="services-grid" id="servicesGrid">
-                <div class="loading">загрузка...</div>
-            </div>
-            <div class="section-buttons">
-                <a href="#interactiveMap" class="section-btn">
-                    <i class="fas fa-map"></i> Карта
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Map Section -->
-    <section class="map-section" id="interactiveMap">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2 class="section-title">Карта </h2>
-                <p class="section-subtitle">Карта наших экскурсий</p>
-            </div>
-            <div class="map-container" data-aos="fade-up" data-aos-delay="100">
-                <div id="phuketMap"></div>
-            </div>
-            <div class="section-buttons">
-                <a href="#news" class="section-btn">
-                    <i class="fas fa-arrow-down"></i> К новостям
-                </a>
-            </div>
-        </div>
-    </section>
-    <!-- ===== ABOUT US SECTION ===== -->
-    <section class="about-section" id="aboutUs">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-content" data-aos="fade-right">
-                    <h2 class="section-title" id="aboutTitle">О нас</h2>
-                    <p class="section-subtitle" style="text-align: left; margin-bottom: 30px;">наша история и миссия</p>
-                    <div class="about-text" id="aboutText">
-                        <!-- Сюда будет загружен текст из Strapi -->
-                        <div class="loading">загрузка...</div>
-                    </div>
-                </div>
-                <div class="about-image-wrapper" data-aos="fade-left">
-                    <img src="" alt="О компании" class="about-image" id="aboutImage">
+                </nav>
+                <div class="header-actions">
+                    <a href="tel:+7 (923) 596-71-47" class="phone-link" id="phoneLink">
+                        <i class="fas fa-phone"></i> <span id="phoneNumber">+66 95 1905 999</span>
+                    </a>
+                    <a href="#" target="_blank" class="btn-tg" id="telegramLink">
+                        <i class="fab fa-telegram-plane"></i> Написать
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- News Section -->
-    <section class="news-section" id="news">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2 class="section-title">Новости и вдохновение</h2>
-                <p class="section-subtitle">последние события</p>
-            </div>
-            <div class="news-grid" id="newsContainer">
-                <div class="loading">загрузка...</div>
-            </div>
-            <div class="section-buttons">
-                <a href="catalog.html?service=news" class="section-btn">
-                    <i class="fas fa-newspaper"></i> Все новости
-                </a>
-                <a href="#heroSection" class="section-btn">
-                    <i class="fas fa-arrow-up"></i> Наверх
+        <!-- Hero Section -->
+        <section class="hero" id="heroSection">
+            <div class="hero-overlay"></div>
+            <video class="hero-video" id="heroVideo" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80"></video>
+            <div class="hero-content" data-aos="fade-up" data-aos-duration="1500">
+                <h1 id="heroTitle">вдохновение<br>в путешествиях</h1>
+                <p id="heroSubtitle">экскурсии · яхты · недвижимость</p>
+                <a href="#popularRoutes" class="hero-btn">
+                    <i class="fas fa-arrow-down"></i> исследовать
                 </a>
             </div>
-        </div>
-    </section>
-    <!-- Reviews Section -->
-        <section class="reviews-section" id="reviews">
+        </section>
+
+        <!-- Inspiration Quote -->
+        <section class="inspiration-section">
+            <div class="container">
+                <div class="inspiration-text" id="inspirationQuote">
+                    Там, где заканчивается карта,<br>начинается настоящее путешествие.
+                </div>
+            </div>
+        </section>
+
+        <!-- Tags Section (Популярные маршруты) -->
+        <section class="tags-section" id="popularRoutes">
             <div class="container">
                 <div class="section-header" data-aos="fade-up">
-                    <h2 class="section-title">Отзывы наших клиентов</h2>
-                    <p class="section-subtitle">реальные истории путешествий</p>
+                    <h2 class="section-title">Популярные маршруты</h2>
+                    <p class="section-subtitle">Выберите свой</p>
                 </div>
-
-                <!-- Reviews Grid -->
-                <div class="reviews-grid" id="reviewsContainer">
-                    <div class="loading">загрузка отзывов...</div>
+                <div class="tags-grid" id="globalTagsContainer">
+                    <div class="loading">загрузка...</div>
                 </div>
-
-                <!-- Review Form -->
-                <div class="review-form-container" data-aos="fade-up" data-aos-delay="200">
-                    <h3 class="review-form-title">Оставьте свой отзыв</h3>
-                    <p class="review-form-subtitle">Ваше мнение поможет другим путешественникам</p>
-
-                    <form class="review-form" id="reviewForm">
-                        <div class="form-group">
-                            <label class="form-label">Ваше имя</label>
-                            <input type="text" class="form-input" name="name" required placeholder="Иван Иванов">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-input" name="email" required placeholder="example@mail.ru">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Тур/Экскурсия</label>
-                            <select class="form-select" name="tour">
-                                <option value="">Выберите тур (необязательно)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Оценка</label>
-                            <div class="form-rating" id="ratingStars">
-                                <span class="rating-star" data-rating="1">★</span>
-                                <span class="rating-star" data-rating="2">★</span>
-                                <span class="rating-star" data-rating="3">★</span>
-                                <span class="rating-star" data-rating="4">★</span>
-                                <span class="rating-star" data-rating="5">★</span>
-                            </div>
-                            <input type="hidden" name="rating" id="ratingInput" value="5" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Ваш отзыв</label>
-                            <textarea class="form-textarea" name="text" required placeholder="Расскажите о ваших впечатлениях..."></textarea>
-                        </div>
-
-                        <div class="form-message" id="formMessage"></div>
-
-                        <button type="submit" class="form-submit" id="submitBtn">
-                            <i class="fas fa-paper-plane"></i> Отправить отзыв
-                        </button>
-                    </form>
-                </div>
-
                 <div class="section-buttons">
+                    <a href="#directions" class="section-btn">
+                        <i class="fas fa-arrow-down"></i> К направлениям
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section (Направления) -->
+        <section class="services-section" id="directions">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Направления</h2>
+                    <p class="section-subtitle">всё для вас</p>
+                </div>
+                <div class="services-grid" id="servicesGrid">
+                    <div class="loading">загрузка...</div>
+                </div>
+                <div class="section-buttons">
+                    <a href="#interactiveMap" class="section-btn">
+                        <i class="fas fa-map"></i> Карта
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map Section -->
+        <section class="map-section" id="interactiveMap">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Карта </h2>
+                    <p class="section-subtitle">Карта наших экскурсий</p>
+                </div>
+                <div class="map-container" data-aos="fade-up" data-aos-delay="100">
+                    <div id="phuketMap"></div>
+                </div>
+                <div class="section-buttons">
+                    <a href="#news" class="section-btn">
+                        <i class="fas fa-arrow-down"></i> К новостям
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- ===== ABOUT US SECTION ===== -->
+        <section class="about-section" id="aboutUs">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-content" data-aos="fade-right">
+                        <h2 class="section-title" id="aboutTitle">О нас</h2>
+                        <p class="section-subtitle" style="text-align: left; margin-bottom: 30px;">наша история и миссия</p>
+                        <div class="about-text" id="aboutText">
+                            <!-- Сюда будет загружен текст из Strapi -->
+                            <div class="loading">загрузка...</div>
+                        </div>
+                    </div>
+                    <div class="about-image-wrapper" data-aos="fade-left">
+                        <img src="" alt="О компании" class="about-image" id="aboutImage">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section class="news-section" id="news">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">Новости и вдохновение</h2>
+                    <p class="section-subtitle">последние события</p>
+                </div>
+                <div class="news-grid" id="newsContainer">
+                    <div class="loading">загрузка...</div>
+                </div>
+                <div class="section-buttons">
+                    <a href="catalog.html?service=news" class="section-btn">
+                        <i class="fas fa-newspaper"></i> Все новости
+                    </a>
                     <a href="#heroSection" class="section-btn">
                         <i class="fas fa-arrow-up"></i> Наверх
                     </a>
                 </div>
             </div>
         </section>
+        <!-- Reviews Section -->
+            <section class="reviews-section" id="reviews">
+                <div class="container">
+                    <div class="section-header" data-aos="fade-up">
+                        <h2 class="section-title">Отзывы наших клиентов</h2>
+                        <p class="section-subtitle">реальные истории путешествий</p>
+                    </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4 id="footerCompanyName">Эмоции Жизни</h4>
-                    <p style="color:#aaa; font-weight:300; font-size:14px;" id="footerDescription">Путешествия, которые остаются в сердце.</p>
+                    <!-- Reviews Grid -->
+                    <div class="reviews-grid" id="reviewsContainer">
+                        <div class="loading">загрузка отзывов...</div>
+                    </div>
+
+                    <!-- Review Form -->
+                    <div class="review-form-container" data-aos="fade-up" data-aos-delay="200">
+                        <h3 class="review-form-title">Оставьте свой отзыв</h3>
+                        <p class="review-form-subtitle">Ваше мнение поможет другим путешественникам</p>
+
+                        <form class="review-form" id="reviewForm">
+                            <div class="form-group">
+                                <label class="form-label">Ваше имя</label>
+                                <input type="text" class="form-input" name="name" required placeholder="Иван Иванов">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" name="email" required placeholder="example@mail.ru">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Тур/Экскурсия</label>
+                                <select class="form-select" name="tour">
+                                    <option value="">Выберите тур (необязательно)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Оценка</label>
+                                <div class="form-rating" id="ratingStars">
+                                    <span class="rating-star" data-rating="1">★</span>
+                                    <span class="rating-star" data-rating="2">★</span>
+                                    <span class="rating-star" data-rating="3">★</span>
+                                    <span class="rating-star" data-rating="4">★</span>
+                                    <span class="rating-star" data-rating="5">★</span>
+                                </div>
+                                <input type="hidden" name="rating" id="ratingInput" value="5" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Ваш отзыв</label>
+                                <textarea class="form-textarea" name="text" required placeholder="Расскажите о ваших впечатлениях..."></textarea>
+                            </div>
+
+                            <div class="form-message" id="formMessage"></div>
+
+                            <button type="submit" class="form-submit" id="submitBtn">
+                                <i class="fas fa-paper-plane"></i> Отправить отзыв
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="section-buttons">
+                        <a href="#heroSection" class="section-btn">
+                            <i class="fas fa-arrow-up"></i> Наверх
+                        </a>
+                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Навигация</h4>
-                    <ul class="footer-links" id="footerLinks">
-                        <li><a href="#heroSection">Главная</a></li>
-                        <li><a href="#popularRoutes">Маршруты</a></li>
-                        <li><a href="#directions">Направления</a></li>
-                        <li><a href="#interactiveMap">Карта</a></li>
-                        <li><a href="#news">Новости</a></li>
-                        <li><a href="catalog.html">Каталог</a></li>
-                    </ul>
+            </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4 id="footerCompanyName">Эмоции Жизни</h4>
+                        <p style="color:#aaa; font-weight:300; font-size:14px;" id="footerDescription">Путешествия, которые остаются в сердце.</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Навигация</h4>
+                        <ul class="footer-links" id="footerLinks">
+                            <li><a href="#heroSection">Главная</a></li>
+                            <li><a href="#popularRoutes">Маршруты</a></li>
+                            <li><a href="#directions">Направления</a></li>
+                            <li><a href="#interactiveMap">Карта</a></li>
+                            <li><a href="#news">Новости</a></li>
+                            <li><a href="catalog.html">Каталог</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Контакты</h4>
+                        <ul class="footer-links" id="footerContacts">
+                            <li><i class="fas fa-phone"></i> <span id="footerPhone">+7 (923) 596-71-47</span></li>
+                            <li><i class="fab fa-telegram"></i> <span id="footerTelegram">@Ulyanova_AlinaA</span></li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Контакты</h4>
-                    <ul class="footer-links" id="footerContacts">
-                        <li><i class="fas fa-phone"></i> <span id="footerPhone">+7 (923) 596-71-47</span></li>
-                        <li><i class="fab fa-telegram"></i> <span id="footerTelegram">@Ulyanova_AlinaA</span></li>
-                    </ul>
+                <div class="copyright" id="copyright">
+                    &copy; 2026 Эмоции Жизни
                 </div>
             </div>
-            <div class="copyright" id="copyright">
-                &copy; 2026 Эмоции Жизни
-            </div>
-        </div>
-    </footer>
+        </footer>
 
-    <!-- ===== КНОПКА ПОМОЩИ В TELEGRAM ===== -->
-    <a href="https://t.me/Ulyanova_AlinaA" target="_blank" class="help-button" id="helpButton">
-        <i class="fab fa-telegram-plane"></i>
-        <span class="help-text">Связь с администратором</span>
-    </a>
-
+        <!-- ===== КНОПКА ПОМОЩИ В TELEGRAM ===== -->
+        <a href="https://t.me/Ulyanova_AlinaA" target="_blank" class="help-button" id="helpButton">
+            <i class="fab fa-telegram-plane"></i>
+            <span class="help-text">Связь с администратором</span>
+        </a>
+    </div>
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
 
-        const STRAPI_URL = '';
+        const STRAPI_URL = 'http://5.8.76.244:1337';
 
         let siteSettings = {};
 
@@ -2295,6 +2331,35 @@
                 if (aboutTextEl) aboutTextEl.innerHTML = '<p>Не удалось загрузить информацию.</p>';
             }
         }
+        // Проверка и исправление мобильного layout
+        function fixMobileLayout() {
+            if (window.innerWidth <= 768) {
+                // Проверяем ширину body
+                document.body.style.overflowX = 'hidden';
+                document.documentElement.style.overflowX = 'hidden';
+
+                // Проверяем все контейнеры
+                document.querySelectorAll('.container').forEach(container => {
+                    container.style.maxWidth = '100%';
+                    container.style.paddingLeft = '15px';
+                    container.style.paddingRight = '15px';
+                });
+
+                // Проверяем возможные вылетающие элементы, но без console.warn
+                document.querySelectorAll('*').forEach(el => {
+                    // Пропускаем элементы с фиксированным позиционированием
+                    const style = window.getComputedStyle(el);
+                    if (style.position === 'fixed' || style.position === 'absolute') return;
+
+                    const rect = el.getBoundingClientRect();
+                    if (rect.right > window.innerWidth + 2) { // допускаем небольшую погрешность
+                        el.style.maxWidth = '100%';
+                        el.style.boxSizing = 'border-box';
+                        el.style.overflowX = 'hidden';
+                    }
+                });
+            }
+        }
         document.addEventListener('DOMContentLoaded', () => {
             loadSiteSettings().then(() => {
                 loadHeroVideo();
@@ -2319,6 +2384,10 @@
                     AOS.refresh();
                     // Запускаем tilt эффект после того как AOS применил анимации
                     initTiltEffect();
+
+                    setTimeout(fixMobileLayout, 500);
+                    setTimeout(fixMobileLayout, 1000);
+                    setTimeout(fixMobileLayout, 2000);
                 }, 500);
             });
         });
