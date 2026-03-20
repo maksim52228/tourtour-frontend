@@ -1375,6 +1375,29 @@
             .help-button:hover { width: 180px; }
             .help-button .help-text { display: none; }
         }
+        /* Уведомление о копировании */
+        .copy-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 10000;
+            animation: fadeInOut 2s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
     </style>
 </head>
 <body>
@@ -1395,10 +1418,13 @@
                 </nav>
                 <div class="header-actions">
                     <a href="tel:+7 (923) 596-71-47" class="phone-link" id="phoneLink">
-                        <i class="fas fa-phone"></i> <span id="phoneNumber">+66 95 1905 999</span>
+                        <i class="fas fa-phone"></i> <span id="phoneNumber">+7 (923) 596-71-47</span>
                     </a>
-                    <a href="#" target="_blank" class="btn-tg" id="telegramLink">
-                        <i class="fab fa-telegram-plane"></i> Написать
+                    <a href="https://t.me/Ulyanova_AlinaA" target="_blank" class="btn-tg" id="telegramLink">
+                        <i class="fab fa-telegram-plane"></i> Telegram
+                    </a>
+                    <a href="https://vk.com/id1066899986" target="_blank" class="btn-tg" id="vkLink">
+                        <i class="fab fa-vk"></i> VK
                     </a>
                 </div>
             </div>
@@ -1660,6 +1686,7 @@
         }
 
         async function loadSiteSettings() {
+
             try {
                 const res = await fetch(`${STRAPI_URL}/api/site-setting?populate=*`);
 
@@ -1713,6 +1740,7 @@
                         if (phoneLink) phoneLink.href = `tel:${siteSettings.phone.replace(/\s+/g, '')}`;
                     }
 
+                    const vkLink = document.getElementById('vkLink');
                     const telegramLink = document.getElementById('telegramLink');
                     const footerTelegram = document.getElementById('footerTelegram');
                     const helpButton = document.getElementById('helpButton');
@@ -1733,6 +1761,7 @@
                             helpButton.href = `https://t.me/${telegramUsername}`;
                         }
                     }
+
 
                     if (siteSettings.heroTitle) {
                         const heroTitle = document.getElementById('heroTitle');
@@ -2591,6 +2620,40 @@
                     }
                 });
             }
+        }
+        // Функция показа уведомления
+        function showCopyMessage(text) {
+            const toast = document.createElement('div');
+            toast.className = 'copy-toast';
+            toast.textContent = text;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // Копирование номера телефона при клике
+        const phoneLink = document.getElementById('phoneLink');
+        if (phoneLink) {
+            phoneLink.addEventListener('click', function(e) {
+                e.preventDefault(); // Отменяем переход по ссылке
+                const phoneNumber = document.getElementById('phoneNumber').innerText;
+
+                // Копируем в буфер обмена
+                navigator.clipboard.writeText(phoneNumber).then(() => {
+                    showCopyMessage('📱 Номер скопирован: ' + phoneNumber);
+                }).catch(err => {
+                    console.error('Ошибка копирования:', err);
+                    // fallback для старых браузеров
+                    const textarea = document.createElement('textarea');
+                    textarea.value = phoneNumber;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showCopyMessage('📱 Номер скопирован: ' + phoneNumber);
+                });
+            });
         }
         document.addEventListener('DOMContentLoaded', () => {
             loadSiteSettings().then(() => {
