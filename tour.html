@@ -105,6 +105,11 @@
             .content-block { grid-template-columns: 1fr !important; }
             #tourMap { height: 300px; }
         }
+        .tour-description {
+            white-space: pre-wrap; /* Сохраняет пробелы и переносы строк */
+            word-wrap: break-word; /* Переносит длинные слова, если нужно */
+            line-height: 1.6;      /* Делает текст более читаемым */
+        }
     </style>
 </head>
 <body>
@@ -375,7 +380,7 @@
                 </div>
                 <div class="content-block">
                     <h3>📝 Описание</h3>
-                    <div>${description}</div>
+                    <div class="tour-description">${description}</div>
                 </div>
                 ${galleryHtml}
                 <div class="map-section">
