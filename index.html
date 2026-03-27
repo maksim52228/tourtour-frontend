@@ -1423,7 +1423,7 @@
                     <a href="https://t.me/Ulyanova_AlinaA" target="_blank" class="btn-tg" id="telegramLink">
                         <i class="fab fa-telegram-plane"></i> Telegram
                     </a>
-                    <a href="https://vk.com/id1066899986" target="_blank" class="btn-tg" id="vkLink">
+                    <a href="https://vk.com/alina_ulyanova" target="_blank" class="btn-tg" id="vkLink">
                         <i class="fab fa-vk"></i> VK
                     </a>
                 </div>
@@ -2262,8 +2262,9 @@
                 container.innerHTML = json.data.map((item, i) => {
                     const img = getImageUrl(item.coverImage) || 'https://placehold.co/600x400/b6977c/ffffff?text=news';
                     const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+
                     return `
-                        <div class="news-card" data-aos="fade-up" data-aos-delay="${i*70}">
+                        <div class="news-card" data-aos="fade-up" data-aos-delay="${i*70}" onclick="window.location.href='catalog.html?service=news'">
                             <div class="news-img-wrapper">
                                 <img src="${img}" class="news-img" alt="" loading="lazy" onerror="this.src='https://placehold.co/600x400/b6977c/ffffff?text=news'">
                                 ${item.isHot ? '<span class="hot-badge">горячее</span>' : ''}
@@ -2275,7 +2276,6 @@
                             </div>
                         </div>`;
                 }).join('');
-
 
 
             } catch (e) {
