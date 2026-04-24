@@ -1656,7 +1656,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
 
-        const STRAPI_URL = '';
+        const STRAPI_URL = 'http://5.8.76.244:1337';
 
         let siteSettings = {};
 
@@ -1844,52 +1844,60 @@
 
         // ИСПРАВЛЕННАЯ ФУНКЦИЯ TILT EFFECT
         function initTiltEffect() {
+            // ⚙️ НАСТРОЙКИ СКОРОСТИ/ЧУВСТВИТЕЛЬНОСТИ
+            // Меньшее число = сильнее/быстрее реакция на курсор
+            // Большее число = мягче/медленнее реакция
+            const SENSITIVITY_TAG = 28;     // 🔥 Популярные маршруты (.tag-card)
+            const SENSITIVITY_SERVICE = 100; // 🐢 Направления (.service-card)
 
+            // Берём только нужные карточки
             const cards = document.querySelectorAll('.tag-card, .service-card');
 
             cards.forEach(card => {
-
                 let frame;
+                // Определяем тип карточки и назначаем её чувствительность
+                const sensitivity = card.classList.contains('tag-card') ? SENSITIVITY_TAG : SENSITIVITY_SERVICE;
 
                 card.addEventListener('mousemove', (e) => {
-
                     card.classList.add('tilt-active');
-
                     if (frame) cancelAnimationFrame(frame);
 
                     frame = requestAnimationFrame(() => {
-
                         const rect = card.getBoundingClientRect();
-
                         const x = e.clientX - rect.left;
                         const y = e.clientY - rect.top;
 
                         const centerX = rect.width / 2;
                         const centerY = rect.height / 2;
 
-                        const rotateX = -(y - centerY) / 40;
-                        const rotateY = (x - centerX) / 40;
+                        // Рассчитываем углы
+                        const rotateX = -(y - centerY) / sensitivity;
+                        const rotateY = (x - centerX) / sensitivity;
 
-                        card.style.transform =
-                            `perspective(900px)
-                             rotateX(${rotateX}deg)
-                             rotateY(${rotateY}deg)
-                             scale(1.015)`;
+                        // Ограничиваем максимальный угол, чтобы карточки не "ломались"
+                        const maxRotation = 9;
+                        const clampedRotateX = Math.max(-maxRotation, Math.min(maxRotation, rotateX));
+                        const clampedRotateY = Math.max(-maxRotation, Math.min(maxRotation, rotateY));
+
+                        card.style.transform = `perspective(1100px) rotateX(${clampedRotateX}deg) rotateY(${clampedRotateY}deg) scale(1.02)`;
                     });
-
                 });
 
                 card.addEventListener('mouseleave', () => {
-
                     card.classList.remove('tilt-active');
+                    // Плавный возврат в исходное положение
+                    card.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
 
-                    card.style.transform = '';
-
+                    // Убираем transition после завершения анимации, чтобы не мешать mousemove
+                    setTimeout(() => {
+                        card.style.transition = '';
+                    }, 400);
                 });
-
             });
-
         }
+
+
         function initCursorLight() {
 
             const cards = document.querySelectorAll(
@@ -2195,8 +2203,8 @@
                 menuItems.push({ type: 'link', url: 'catalog.html', text: 'Каталог' });
                 menuItems.push({ type: 'link', url: '#reviews', text: 'Отзывы' });
 
-                // Простая логика: если больше 6 пунктов, показываем выпадающее меню
-                if (menuItems.length > 6) {
+                // Простая логика: если больше 4 пунктов, показываем выпадающее меню
+                if (menuItems.length > 4) {
                     navWrapper.innerHTML = `
                         <div class="dropdown-menu">
                             <span class="dropdown-toggle nav-link">
@@ -2276,6 +2284,7 @@
                             </div>
                         </div>`;
                 }).join('');
+
 
 
             } catch (e) {
